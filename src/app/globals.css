@@ -1,26 +1,67 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-accent:           #CC4E0D;
+  --color-bg-deep:          #FFFFFF;
+  --color-bg-mid:           #F6F7F9;
+  --color-surface:          #FFFFFF;
+  --color-surface-elevated: #FFF7F2;
+  --color-border:           #E5E7EB;
+  --color-text:             #1C1917;
+  --color-text-muted:       #6B7280;
+  --color-success:          #036039;
+  --color-danger:           #B42318;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+
+  --font-heading: var(--font-oswald);
+  --font-body:    var(--font-inter);
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #1C1917;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+@layer components {
+  .field {
+    @apply w-full px-3 py-2.5 border border-[#C1C7D0] rounded-md text-sm text-[#1C1917]
+           bg-white placeholder:text-[#9CA3AF]
+           focus:outline-none focus:border-[#CC4E0D] focus:ring-2 focus:ring-[#CC4E0D]/20
+           transition-colors;
+  }
+
+  .field-sm {
+    @apply px-2 py-1.5 border border-[#C1C7D0] rounded text-sm text-[#1C1917]
+           bg-white placeholder:text-[#9CA3AF]
+           focus:outline-none focus:border-[#CC4E0D] focus:ring-2 focus:ring-[#CC4E0D]/20
+           transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-[#CC4E0D] text-white text-sm font-semibold rounded-md
+           hover:bg-[#b34409] active:bg-[#9a3a08] transition-colors
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#CC4E0D] focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
+  }
+
+  .btn-ghost {
+    @apply text-sm text-[#6B7280] hover:text-[#1C1917] transition-colors
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B7280]/40 focus-visible:ring-offset-1
+           cursor-pointer;
+  }
+
+  .btn-danger {
+    @apply text-sm text-[#B42318] hover:text-[#8b1c13] transition-colors
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B42318]/40 focus-visible:ring-offset-1
+           disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer;
+  }
 }
