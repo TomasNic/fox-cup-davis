@@ -30,7 +30,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
       <Navbar />
-      <main className="max-w-[1440px] mx-auto px-4 md:px-10 py-8 pb-24 md:pb-8 space-y-6">
+      <main className="page-main space-y-8">
 
         {/* Grilla superior: Próxima Copa | Copas anteriores */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
           {/* Próxima Copa */}
           {upcomingCup ? (
             <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-5 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917]">
                   Próxima Copa
                 </h2>
@@ -67,7 +67,7 @@ export default async function DashboardPage() {
 
           {/* Copas anteriores */}
           <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-5 flex flex-col">
-            <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
+            <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
               Copas anteriores
             </h2>
             {completedCups.length === 0 ? (
@@ -108,7 +108,7 @@ export default async function DashboardPage() {
 
         {/* Ranking General */}
         <div>
-          <h1 className="text-2xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
+          <h1 className="text-2xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
             Ranking General
           </h1>
 

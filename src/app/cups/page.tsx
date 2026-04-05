@@ -57,10 +57,15 @@ function CupCard({ cup }: { cup: Cup }) {
 export default async function CupsPage() {
   const [cups, isAdmin] = await Promise.all([getCups(), checkAdminSession()]);
 
+  const upcoming = cups.filter((c) => c.status === "upcoming" || c.status === "in_progress");
+  const past = cups
+    .filter((c) => c.status === "completed")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
       <Navbar />
-      <main className="max-w-[1440px] mx-auto px-4 md:px-10 py-8 pb-24 md:pb-8">
+      <main className="page-main">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917]">
             Copas
@@ -80,8 +85,28 @@ export default async function CupsPage() {
             No hay copas registradas aún.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {cups.map((cup) => <CupCard key={cup.id} cup={cup} />)}
+          <div className="flex flex-col gap-10">
+            {upcoming.length > 0 && (
+              <section>
+                <h2 className="text-sm font-bold uppercase tracking-widest text-[#CC4E0D] mb-4">
+                  Próximas copas
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {upcoming.map((cup) => <CupCard key={cup.id} cup={cup} />)}
+                </div>
+              </section>
+            )}
+
+            {past.length > 0 && (
+              <section>
+                <h2 className="text-sm font-bold uppercase tracking-widest text-[#6B7280] mb-4">
+                  Copas anteriores
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {past.map((cup) => <CupCard key={cup.id} cup={cup} />)}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>

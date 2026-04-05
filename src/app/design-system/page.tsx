@@ -174,6 +174,145 @@ export default function DesignSystemPage() {
           </div>
         </Section>
 
+        {/* SPACING */}
+        <Section title="Espaciado">
+
+          {/* 1 — Escala */}
+          <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Escala de tokens</p>
+          <div className="bg-white border border-[#E5E7EB] rounded-[10px] divide-y divide-[#F3F4F6] mb-6">
+            {[
+              { token: "--space-1",  tw: "p-1  / gap-1",   px: "4px",  bar: 4  },
+              { token: "--space-2",  tw: "p-2  / gap-2",   px: "8px",  bar: 8  },
+              { token: "--space-3",  tw: "p-3  / gap-3",   px: "12px", bar: 12 },
+              { token: "--space-4",  tw: "p-4  / gap-4",   px: "16px", bar: 16 },
+              { token: "--space-5",  tw: "p-5  / gap-5",   px: "20px", bar: 20 },
+              { token: "--space-6",  tw: "p-6  / gap-6",   px: "24px", bar: 24 },
+              { token: "--space-8",  tw: "p-8  / gap-8",   px: "32px", bar: 32 },
+              { token: "--space-10", tw: "p-10 / gap-10",  px: "40px", bar: 40 },
+              { token: "--space-12", tw: "p-12 / gap-12",  px: "48px", bar: 48 },
+            ].map(({ token, tw, px, bar }) => (
+              <div key={token} className="flex items-center gap-4 px-4 py-2.5">
+                <div
+                  className="bg-[#CC4E0D]/15 border border-[#CC4E0D]/20 rounded shrink-0"
+                  style={{ width: bar, height: 16, minWidth: 4 }}
+                />
+                <code className="text-xs text-[#CC4E0D] w-28 shrink-0">{token}</code>
+                <span className="text-xs text-[#1C1917] flex-1">{tw}</span>
+                <span className="text-xs font-semibold text-[#6B7280] tabular-nums">{px}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* 2 — Contenedor de página */}
+          <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Contenedor de página — <code className="text-[#CC4E0D]">.page-main</code></p>
+          <div className="bg-white border border-[#E5E7EB] rounded-[10px] overflow-hidden mb-6">
+            {/* Visual diagram */}
+            <div className="bg-[#F6F7F9] p-4 flex justify-center">
+              <div className="w-full max-w-xs">
+                {/* Outer box = viewport */}
+                <div className="relative border-2 border-dashed border-[#E5E7EB] rounded p-2">
+                  <span className="absolute -top-2.5 left-2 text-[10px] bg-[#F6F7F9] px-1 text-[#9CA3AF]">viewport</span>
+                  {/* Top padding */}
+                  <div className="bg-[#CC4E0D]/10 rounded h-4 flex items-center justify-center mb-0.5">
+                    <span className="text-[9px] text-[#CC4E0D] font-semibold">top: 16px</span>
+                  </div>
+                  {/* Middle row: left pad + content + right pad */}
+                  <div className="flex gap-0.5">
+                    <div className="bg-[#CC4E0D]/10 rounded flex items-center justify-center" style={{ width: 28 }}>
+                      <span className="text-[9px] text-[#CC4E0D] font-semibold" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>16px · 32px</span>
+                    </div>
+                    <div className="flex-1 bg-white border border-[#E5E7EB] rounded min-h-[48px] flex items-center justify-center">
+                      <span className="text-[10px] text-[#6B7280]">contenido</span>
+                    </div>
+                    <div className="bg-[#CC4E0D]/10 rounded flex items-center justify-center" style={{ width: 28 }}>
+                      <span className="text-[9px] text-[#CC4E0D] font-semibold" style={{ writingMode: "vertical-rl" }}>16px · 32px</span>
+                    </div>
+                  </div>
+                  {/* Bottom padding */}
+                  <div className="bg-[#CC4E0D]/10 rounded h-5 flex items-center justify-center mt-0.5">
+                    <span className="text-[9px] text-[#CC4E0D] font-semibold">bottom: 96px mobile / 32px desktop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Code */}
+            <div className="px-5 py-4 font-mono text-xs space-y-0.5 border-t border-[#F3F4F6]">
+              <p className="text-[#9CA3AF]">{"/* globals.css — @layer components */"}</p>
+              <p className="text-[#1C1917]">{".page-main {"}</p>
+              <p className="text-[#CC4E0D] pl-4">{"max-width: 1440px;  margin: 0 auto;"}</p>
+              <p className="text-[#CC4E0D] pl-4">{"padding-top: 16px;              /* --space-4 */"}</p>
+              <p className="text-[#CC4E0D] pl-4">{"padding-inline: 16px;           /* mobile  — --space-4 */"}</p>
+              <p className="text-[#CC4E0D] pl-4">{"padding-inline: 32px;           /* md+     — --space-8 */"}</p>
+              <p className="text-[#CC4E0D] pl-4">{"padding-bottom: 96px;           /* mobile  — nav clearance */"}</p>
+              <p className="text-[#CC4E0D] pl-4">{"padding-bottom: 32px;           /* md+     — --space-8 */"}</p>
+              <p className="text-[#1C1917]">{"}"}</p>
+            </div>
+            <div className="px-5 py-3 bg-[#F6F7F9] border-t border-[#F3F4F6] flex flex-wrap gap-2">
+              {["dashboard", "cups", "cups/[id]", "players", "players/[id]", "reglamento"].map((p) => (
+                <span key={p} className="text-[10px] font-mono bg-white border border-[#E5E7EB] px-2 py-0.5 rounded text-[#6B7280]">{p}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* 3 — Card padding */}
+          <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Padding de cards</p>
+          <div className="space-y-2 mb-6">
+            {[
+              { name: "Card SM",  desc: "list items, filas de tabla",           cls: "p-4",  token: "--card-padding-sm", px: "16px",
+                usage: ["Ranking rows", "Cup history items", "Player list rows"] },
+              { name: "Card MD",  desc: "cards estándar, secciones internas",   cls: "p-5",  token: "--card-padding-md", px: "20px",
+                usage: ["Dashboard cards", "Cup cards", "Team panels"] },
+              { name: "Card LG",  desc: "cards destacadas, secciones featured", cls: "p-6",  token: "--card-padding-lg", px: "24px",
+                usage: ["Player profile", "Cup scoreboard", "Form containers"] },
+            ].map(({ name, desc, cls, token, px, usage }) => (
+              <div key={token} className={`bg-white border border-[#E5E7EB] rounded-[10px] ${cls}`}>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-[#1C1917]">{name}</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5">{desc}</p>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {usage.map((u) => (
+                        <span key={u} className="text-[10px] bg-[#F6F7F9] border border-[#E5E7EB] px-1.5 py-0.5 rounded text-[#6B7280]">{u}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-mono font-bold text-[#CC4E0D]">{cls}</p>
+                    <p className="text-[10px] text-[#6B7280] mt-0.5">{token}</p>
+                    <p className="text-[10px] text-[#9CA3AF]">{px}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 4 — Ritmo vertical */}
+          <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Ritmo vertical</p>
+          <div className="bg-white border border-[#E5E7EB] rounded-[10px] divide-y divide-[#F3F4F6]">
+            {[
+              { rule: "Título de sección → contenido",          cls: "mb-4",     px: "16px", example: "h2 → lista de items" },
+              { rule: "Header de sidebar → lista",              cls: "mb-3",     px: "12px", example: "Compañeros / Rivales" },
+              { rule: "Card principal → siguiente sección",     cls: "mb-8",     px: "32px", example: "Profile card → stats grid" },
+              { rule: "Scoreboard → grilla de equipos",         cls: "mb-8",     px: "32px", example: "Cup detail" },
+              { rule: "Secciones en dashboard",                 cls: "space-y-8", px: "32px", example: "Copa + Ranking" },
+              { rule: "Grupos de sección (copas page)",         cls: "gap-10",   px: "40px", example: "Próximas / Anteriores" },
+              { rule: "Page title → primer bloque",             cls: "mb-6",     px: "24px", example: "h1 → content area" },
+            ].map(({ rule, cls, px, example }) => (
+              <div key={rule} className="flex items-center gap-4 px-4 py-3">
+                <div className="flex-1">
+                  <p className="text-sm text-[#1C1917]">{rule}</p>
+                  <p className="text-xs text-[#9CA3AF] mt-0.5">{example}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-xs font-mono font-semibold text-[#CC4E0D]">{cls}</p>
+                  <p className="text-[10px] text-[#9CA3AF]">{px}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </Section>
+
       </main>
       <MobileNav />
     </div>

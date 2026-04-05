@@ -18,6 +18,22 @@
 
   --font-heading: var(--font-oswald);
   --font-body:    var(--font-inter);
+
+  /* Spacing scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Card padding */
+  --card-padding-sm: 16px;   /* tight list items  */
+  --card-padding-md: 20px;   /* standard cards    */
+  --card-padding-lg: 24px;   /* featured cards    */
 }
 
 :root {
@@ -32,6 +48,11 @@ body {
 }
 
 @layer components {
+  /* ── Layout ──────────────────────────────────────────────────── */
+  .page-main {
+    @apply max-w-[1440px] mx-auto px-4 md:px-8 pt-4 pb-24 md:pb-8;
+  }
+
   .field {
     @apply w-full px-3 py-2.5 border border-[#C1C7D0] rounded-md text-sm text-[#1C1917]
            bg-white placeholder:text-[#9CA3AF]

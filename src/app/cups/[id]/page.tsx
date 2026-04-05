@@ -61,7 +61,7 @@ export default async function CupDetailPage({ params }: { params: Promise<{ id: 
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
       <Navbar />
-      <main className="max-w-[1440px] mx-auto px-4 md:px-10 py-8 pb-24 md:pb-8">
+      <main className="page-main">
 
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
@@ -81,7 +81,7 @@ export default async function CupDetailPage({ params }: { params: Promise<{ id: 
         </div>
 
         {/* Marcador */}
-        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 mb-6">
+        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 mb-8">
           <div className="flex items-center justify-around gap-4">
             <div className={`flex-1 text-center ${cup.winner_team === "A" ? "text-[#036039]" : "text-[#1C1917]"}`}>
               <p className="text-base font-bold font-[var(--font-oswald)]">{cup.team_a_name}</p>
@@ -145,7 +145,7 @@ export default async function CupDetailPage({ params }: { params: Promise<{ id: 
         {/* Partidos Singles */}
         {singles.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
+            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
               Singles
             </h2>
             {categories.map((cat) => (
@@ -164,7 +164,7 @@ export default async function CupDetailPage({ params }: { params: Promise<{ id: 
         {/* Partidos Dobles */}
         {doubles.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
+            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
               Dobles
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">

@@ -12,7 +12,7 @@ export default async function PlayersPage() {
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
       <Navbar />
-      <main className="max-w-[1440px] mx-auto px-4 md:px-10 py-8 pb-24 md:pb-8">
+      <main className="page-main">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917]">
             Jugadores

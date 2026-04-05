@@ -17,7 +17,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
       <Navbar />
-      <main className="max-w-[1440px] mx-auto px-4 md:px-10 py-8 pb-24 md:pb-8">
+      <main className="page-main">
 
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
@@ -35,7 +35,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
         </div>
 
         {/* Perfil */}
-        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 mb-6 flex items-start gap-5">
+        <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 mb-8 flex items-start gap-5">
           <Avatar firstName={player.first_name} lastName={player.last_name} avatarUrl={player.avatar_url} size="lg" />
           <div className="flex-1">
             <div className="flex items-center gap-3 flex-wrap">
@@ -66,7 +66,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Historial copas */}
           <div className="flex-1">
-            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
+            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
               Historial de Copas
             </h2>
             {cup_history.length === 0 ? (
@@ -96,7 +96,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
           <div className="w-full lg:w-[260px] shrink-0 space-y-5">
             {teammates.length > 0 && (
               <div>
-                <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-2">
+                <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
                   Compañeros frecuentes
                 </h2>
                 <div className="space-y-1.5">
@@ -112,7 +112,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
             )}
             {rivals.length > 0 && (
               <div>
-                <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-2">
+                <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">
                   Rivales frecuentes
                 </h2>
                 <div className="space-y-1.5">
