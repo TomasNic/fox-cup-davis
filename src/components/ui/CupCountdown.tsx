@@ -57,7 +57,7 @@ export default function CupCountdown({ date }: CupCountdownProps) {
         {units.map(({ value, label }, i) => (
           <div key={label} className="flex items-end gap-2">
             <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold font-[var(--font-oswald)] text-[#CC4E0D] tabular-nums leading-none">
+              <span className="text-xl sm:text-2xl font-bold font-[var(--font-oswald)] text-[#CC4E0D] tabular-nums leading-none">
                 {pad(value)}
               </span>
               <span className="text-[9px] font-semibold text-[#9CA3AF] uppercase tracking-wide mt-0.5">

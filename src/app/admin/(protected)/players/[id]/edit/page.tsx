@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import type { PlayerCategory } from "@/types";
 import { Input, Select, Textarea, Button } from "@/components/ui";
+import AvatarUploader from "@/components/ui/AvatarUploader";
 
 const categories: PlayerCategory[] = ["A", "B", "C", "D", "E"];
 
@@ -14,6 +15,7 @@ export default async function EditPlayerPage({ params }: { params: Promise<{ id:
 
   async function handleUpdate(formData: FormData) {
     "use server";
+    const avatarUrl = (formData.get("avatar_url") as string) || null;
     await updatePlayer(id, {
       first_name:  formData.get("first_name")  as string,
       last_name:   formData.get("last_name")   as string,
@@ -23,6 +25,7 @@ export default async function EditPlayerPage({ params }: { params: Promise<{ id:
       height_cm:   formData.get("height_cm")   ? Number(formData.get("height_cm")) : null,
       category:    formData.get("category")    as PlayerCategory,
       description: (formData.get("description") as string) || null,
+      avatar_url:  avatarUrl,
     });
     redirect("/admin/players");
   }
@@ -37,6 +40,11 @@ export default async function EditPlayerPage({ params }: { params: Promise<{ id:
       </div>
 
       <form action={handleUpdate} className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 space-y-4">
+        <AvatarUploader
+          currentUrl={player.avatar_url}
+          firstName={player.first_name}
+          lastName={player.last_name}
+        />
         <div className="grid grid-cols-2 gap-4">
           <Input name="first_name" label="Nombre *"   required defaultValue={player.first_name} />
           <Input name="last_name"  label="Apellido *" required defaultValue={player.last_name} />

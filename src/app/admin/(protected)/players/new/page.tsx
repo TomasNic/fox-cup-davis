@@ -3,12 +3,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { PlayerCategory } from "@/types";
 import { Input, Select, Textarea, Button } from "@/components/ui";
+import AvatarUploader from "@/components/ui/AvatarUploader";
 
 const categories: PlayerCategory[] = ["A", "B", "C", "D", "E"];
 
 export default function NewPlayerPage() {
   async function handleCreate(formData: FormData) {
     "use server";
+    const avatarUrl = (formData.get("avatar_url") as string) || null;
     await createPlayer({
       first_name:  formData.get("first_name")  as string,
       last_name:   formData.get("last_name")   as string,
@@ -19,7 +21,7 @@ export default function NewPlayerPage() {
       category:    formData.get("category")    as PlayerCategory,
       ranking:     null,
       description: (formData.get("description") as string) || null,
-      avatar_url:  null,
+      avatar_url:  avatarUrl,
     });
     redirect("/admin/players");
   }
@@ -34,6 +36,7 @@ export default function NewPlayerPage() {
       </div>
 
       <form action={handleCreate} className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 space-y-4">
+        <AvatarUploader />
         <div className="grid grid-cols-2 gap-4">
           <Input name="first_name" label="Nombre *" required />
           <Input name="last_name"  label="Apellido *" required />

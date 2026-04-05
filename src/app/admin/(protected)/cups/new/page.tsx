@@ -15,6 +15,7 @@ export default function NewCupPage() {
     await createCup({
       name:        formData.get("name")          as string,
       location:    (formData.get("location")     as string) || null,
+      maps_url:    (formData.get("maps_url")     as string) || null,
       date:        formData.get("date")          as string,
       status:      (formData.get("status")       as CupStatus) ?? "upcoming",
       team_a_name: (formData.get("team_a_name")  as string) || "Equipo A",
@@ -39,6 +40,7 @@ export default function NewCupPage() {
           <Select name="status" label="Estado" defaultValue="upcoming" options={statusOptions} />
         </div>
         <Input name="location" label="Lugar" placeholder="Club de Tenis Fox" />
+        <Input name="maps_url" label="Link de Google Maps" placeholder="https://maps.google.com/..." />
         <div className="grid grid-cols-2 gap-4">
           <Input name="team_a_name" label="Nombre Equipo A" placeholder="Equipo A" />
           <Input name="team_b_name" label="Nombre Equipo B" placeholder="Equipo B" />

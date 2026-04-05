@@ -49,7 +49,7 @@ export function playerFullName(p: Pick<Player, "first_name" | "last_name" | "nic
 }
 
 export function playerShortName(p: Pick<Player, "first_name" | "last_name">): string {
-  return `${p.first_name[0]}. ${p.last_name}`;
+  return `${p.first_name} ${p.last_name}`;
 }
 
 // --------------------------------
@@ -59,6 +59,7 @@ export interface Cup {
   id:           string;
   name:         string;
   location:     string | null;
+  maps_url:     string | null;
   date:         string;           // ISO date string
   status:       CupStatus;
   team_a_name:  string;

@@ -102,9 +102,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
                 <div className="space-y-1.5">
                   {teammates.map(({ player: p, times }) => (
                     <Link key={p.id} href={`/players/${p.id}`} className="flex items-center gap-2 text-sm hover:text-[#CC4E0D]">
-                      <div className="w-7 h-7 rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-semibold text-[#6B7280]">{p.first_name[0]}{p.last_name[0]}</span>
-                      </div>
+                      <Avatar firstName={p.first_name} lastName={p.last_name} avatarUrl={p.avatar_url} size="sm" />
                       <span className="text-[#1C1917]">{playerShortName(p)}</span>
                       <span className="ml-auto text-xs text-[#6B7280]">{times}×</span>
                     </Link>
@@ -120,9 +118,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
                 <div className="space-y-1.5">
                   {rivals.map(({ player: p, times, wins }) => (
                     <Link key={p.id} href={`/players/${p.id}`} className="flex items-center gap-2 text-sm hover:text-[#CC4E0D]">
-                      <div className="w-7 h-7 rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-semibold text-[#6B7280]">{p.first_name[0]}{p.last_name[0]}</span>
-                      </div>
+                      <Avatar firstName={p.first_name} lastName={p.last_name} avatarUrl={p.avatar_url} size="sm" />
                       <span className="text-[#1C1917]">{playerShortName(p)}</span>
                       <span className="ml-auto text-xs text-[#6B7280]">{wins}/{times}</span>
                     </Link>

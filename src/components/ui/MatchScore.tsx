@@ -3,11 +3,16 @@ interface SetResult {
   games_b: number;
 }
 
+interface PlayerInfo {
+  name: string;
+  avatarUrl?: string | null;
+}
+
 interface MatchScoreProps {
-  /** Nombres ya formateados del equipo A (1 en singles, 2 en dobles) */
-  playersA: string[];
-  /** Nombres ya formateados del equipo B */
-  playersB: string[];
+  /** Jugadores del equipo A (nombre + avatar opcional) */
+  playersA: PlayerInfo[];
+  /** Jugadores del equipo B */
+  playersB: PlayerInfo[];
   /** Sets jugados */
   sets?: SetResult[];
   /** Equipo ganador; null = pendiente */
@@ -16,7 +21,6 @@ interface MatchScoreProps {
 }
 
 function initials(name: string): string {
-  // "J. García / M. López" → usa solo el primer jugador
   return name
     .split(" / ")[0]
     .split(/\s+/)
@@ -28,7 +32,7 @@ function initials(name: string): string {
 }
 
 interface RowProps {
-  players: string[];
+  players: PlayerInfo[];
   won: boolean;
   hasResult: boolean;
   setScores: number[];
@@ -37,24 +41,35 @@ interface RowProps {
 
 function PlayerRow({ players, won, hasResult, setScores, oppScores }: RowProps) {
   const dimmed = hasResult && !won;
+  const firstPlayer = players[0];
+
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
+    <div className="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3">
       {/* Avatar */}
-      <div className="w-8 h-8 rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0">
-        <span className="text-[10px] font-bold text-[#6B7280]">{initials(players[0])}</span>
-      </div>
+      {firstPlayer.avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={firstPlayer.avatarUrl}
+          alt={firstPlayer.name}
+          className="w-8 h-8 rounded-full object-cover shrink-0"
+        />
+      ) : (
+        <div className="w-8 h-8 rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0">
+          <span className="text-[10px] font-bold text-[#6B7280]">{initials(firstPlayer.name)}</span>
+        </div>
+      )}
 
       {/* Nombre(s) */}
       <span
-        className={`flex-1 text-sm font-semibold truncate transition-colors ${
+        className={`flex-1 text-sm font-semibold transition-colors ${
           dimmed ? "text-[#9CA3AF]" : "text-[#1C1917]"
         }`}
       >
-        {players.join(" / ")}
+        {players.map((p) => p.name).join(" / ")}
       </span>
 
-      {/* Checkmark — ocupa espacio fijo para alinear con la otra fila */}
-      <span className="w-5 shrink-0 text-center">
+      {/* Checkmark */}
+      <span className="w-4 sm:w-5 shrink-0 text-center">
         {won && <span className="text-[#036039] text-sm font-bold">✓</span>}
       </span>
 
@@ -67,7 +82,7 @@ function PlayerRow({ players, won, hasResult, setScores, oppScores }: RowProps) 
           return (
             <span
               key={i}
-              className={`w-7 shrink-0 text-center text-sm tabular-nums font-bold ${
+              className={`w-5 sm:w-7 shrink-0 text-center text-xs sm:text-sm tabular-nums font-bold ${
                 wonSet ? "text-[#1C1917]" : "text-[#9CA3AF]"
               }`}
             >

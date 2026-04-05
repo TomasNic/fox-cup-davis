@@ -8,10 +8,12 @@ Web app para registrar y visualizar los resultados del torneo de tenis **Copa Da
 
 | Capa | Tecnología |
 |------|-----------|
-| Frontend | Next.js 14 (App Router, TypeScript) |
+| Frontend | Next.js 16 (App Router, TypeScript, Turbopack) |
 | Estilos | Tailwind CSS v4 (`@theme inline`) |
 | Base de datos | Supabase (PostgreSQL) |
+| Storage | Supabase Storage (bucket `avatars`, público) |
 | Auth admin | Cookie httpOnly (`cdx_admin`), contraseña por env var |
+| Crop de imágenes | `react-easy-crop` v5 (crop circular para avatares) |
 | Fuentes | Oswald (títulos), Inter (cuerpo) vía Google Fonts |
 
 ## Design tokens
@@ -54,10 +56,10 @@ ADMIN_PASSWORD=...              # Contraseña del usuario admin
 | Ruta | Descripción |
 |------|-------------|
 | `/` | Redirige a `/dashboard` |
-| `/dashboard` | Inicio: ranking top 5 + próxima copa con countdown + última copa |
+| `/dashboard` | Inicio: próxima copa (arriba, full width) + ranking top 3 con "Ver todo el ranking" + copas anteriores (grilla 2 cols en desktop) |
 | `/cups` | Lista de copas (más reciente primero) |
 | `/cups/[id]` | Detalle de copa: equipos, partidos en grilla 3 columnas, marcador |
-| `/players` | Ranking completo de jugadores con stats |
+| `/players` | Ranking completo de jugadores con stats (PJ, PG, PP, TJ, TG, Puntaje) y foto de perfil |
 | `/players/[id]` | Perfil de jugador: stats, historial por copa, compañeros y rivales |
 | `/jugadores` | Redirige a `/players` |
 | `/ranking` | Redirige a `/players` |
@@ -81,6 +83,7 @@ ADMIN_PASSWORD=...              # Contraseña del usuario admin
 |------|--------|-------------|
 | `/api/admin/login` | POST | `{ username, password }` → set cookie |
 | `/api/admin/logout` | POST | Elimina cookie → redirige a `/admin` |
+| `/api/admin/upload-avatar` | POST | Recibe `FormData` con `file` (imagen recortada), sube a Supabase Storage bucket `avatars`, devuelve `{ url }`. Crea el bucket automáticamente si no existe. Requiere cookie `cdx_admin` |
 
 ## Biblioteca de componentes UI (`src/components/ui/`)
 
@@ -92,16 +95,17 @@ Todos los componentes se exportan desde el barrel `src/components/ui/index.ts`.
 | `Input` | Con `label`, `error`, `disabled`. Borde visible `border-2` para accesibilidad |
 | `Select` | Prop `options: {value, label}[]`, `placeholder`, `label`, `error` |
 | `Textarea` | Con `label`, `error`, `rows` |
-| `Avatar` | Iniciales como fallback o `avatarUrl`. Tamaños: `sm`, `md`, `lg` |
+| `Avatar` | Foto de perfil circular o iniciales como fallback. Tamaños: `sm` (28px), `md` (36px), `lg` (64px). Se usa en: ranking, listas de jugadores, equipos en copas, compañeros/rivales, match scores, dashboard |
 | `StatCard` | Número grande + label. Prop `accent` para fondo naranja. Acepta `className` |
 | `CategoryBadge` | Badge de categoría A–E con color propio |
 | `StatusBadge` | Badge de estado de copa: `upcoming`, `in_progress`, `completed` |
 | `ResultBadge` | Badge de resultado: `won`, `lost`, `draw`, `pending` |
-| `MatchScore` | Marcador de partido estilo ATP: dos filas (una por equipo), avatar con iniciales, checkmark ganador, scores por set en columnas alineadas. Props: `playersA[]`, `playersB[]`, `sets[]`, `winner` |
-| `CupCountdown` | Countdown a la próxima copa (`DD:HH:MM:SS`). Client Component con `setInterval`. Solo se renderiza en el cliente para evitar hydration mismatch. Se muestra únicamente si `status === "upcoming"` |
+| `MatchScore` | Marcador de partido estilo ATP: dos filas (una por equipo), avatar con foto o iniciales, checkmark ganador, scores por set en columnas alineadas. Responsive: padding/gap/ancho de scores se reducen en mobile. Props: `playersA: PlayerInfo[]`, `playersB: PlayerInfo[]`, `sets[]`, `winner`. `PlayerInfo = { name: string; avatarUrl?: string \| null }` |
+| `CupCountdown` | Countdown a la próxima copa (`DD:HH:MM:SS`). Client Component con `setInterval`. Tipografía responsive (`text-xl sm:text-2xl`). Solo se renderiza en el cliente para evitar hydration mismatch. Se muestra únicamente si `status === "upcoming"` |
+| `AvatarUploader` | Client Component para subir y recortar fotos de perfil. Flujo: seleccionar imagen → modal con crop circular (`react-easy-crop`) + zoom slider → recorta con Canvas API (máx 512px) → sube a `/api/admin/upload-avatar` → guarda URL en `<input type="hidden" name="avatar_url">`. Renderiza modal vía `createPortal` en `<body>` para evitar conflictos de stacking context con forms. Props: `currentUrl?`, `firstName?`, `lastName?` |
 
 ### Design system showcase
-`/design-system` muestra todos los componentes con ejemplos reales, incluyendo colores, tipografía, botones, inputs, badges, avatares, stat cards, y match scores.
+`/design-system` muestra todos los componentes con ejemplos reales, incluyendo colores, tipografía, botones, inputs, badges, avatares, stat cards, match scores y avatar uploader.
 
 ## Estructura del proyecto
 
@@ -141,11 +145,12 @@ src/
 │   └── api/
 │       └── admin/
 │           ├── login/route.ts
-│           └── logout/route.ts
+│           ├── logout/route.ts
+│           └── upload-avatar/route.ts
 ├── components/
 │   ├── layout/
-│   │   ├── Navbar.tsx                  # Client Component (usePathname)
-│   │   └── MobileNav.tsx               # Client Component (usePathname)
+│   │   ├── Navbar.tsx                  # Client Component — desktop: logo+nav+search input+admin; mobile: logo+search icon (expandible)+admin. Altura: h-16 mobile / h-[72px] desktop
+│   │   └── MobileNav.tsx               # Client Component — bottom bar fijo (md:hidden) con Inicio/Copas/Jugadores
 │   └── ui/
 │       ├── index.ts                    # Barrel export
 │       ├── Button.tsx
@@ -156,7 +161,8 @@ src/
 │       ├── StatCard.tsx
 │       ├── Badge.tsx                   # CategoryBadge, StatusBadge, ResultBadge
 │       ├── MatchScore.tsx
-│       └── CupCountdown.tsx
+│       ├── CupCountdown.tsx
+│       └── AvatarUploader.tsx
 ├── lib/
 │   ├── auth.ts                         # loginAdmin / logoutAdmin / checkAdminSession
 │   └── supabase/
@@ -199,7 +205,7 @@ Schema en `supabase/migrations/002_cups_model.sql`. Seed en `supabase/seed.sql`.
 | `getCupWithDetails(id)` | Copa completa: jugadores, partidos con jugadores, sets, scores calculados |
 | `getPlayers()` | Jugadores ordenados por ranking manual |
 | `getPlayer(id)` | Un jugador por ID |
-| `getPlayerRanking()` | Calcula score en TypeScript: `matches_played + matches_won + cups_played + cups_won`. Ordena por score desc, luego apellido |
+| `getPlayerRanking()` | Calcula score en TypeScript: `matches_played + matches_won + cups_played + cups_won`. También calcula `matches_lost`. Ordena por score desc, luego apellido |
 | `getPlayerHistory(id)` | Perfil completo: historial por copa, compañeros y rivales frecuentes |
 
 ## Server Actions (`src/lib/supabase/actions.ts`)
@@ -219,6 +225,13 @@ Todas usan `adminClient()` (service_role) y llaman `revalidatePath()` al termina
 | `deleteMatch(matchId, cupId)` | Elimina partido |
 | `saveSets(matchId, sets)` | Guarda sets → recalcula `winner_team` del partido y de la copa |
 
+## Supabase Storage
+
+- **Bucket `avatars`**: público, se crea automáticamente en el primer upload vía `/api/admin/upload-avatar`
+- Las imágenes se recortan en el cliente (Canvas API, máx 512px JPEG) antes de subir
+- Los archivos se nombran con timestamp + random hash para evitar colisiones
+- La URL pública se guarda en `players.avatar_url`
+
 ## Lógica de negocio
 
 - **Ganador de partido**: quien gana más sets (ej: 2 de 3)
@@ -233,6 +246,7 @@ Tipos base: `Player`, `Cup`, `CupPlayer`, `Match`, `Set`
 Tipos compuestos: `CupWithDetails`, `MatchWithDetails`, `PlayerStats`, `PlayerHistory`, `PlayerCupHistory`
 Helpers: `playerFullName(p)`, `playerShortName(p)` (ej: "J. Pérez")
 Variantes Insert/Update para cada entidad.
+`PlayerStats` incluye: `matches_played`, `matches_won`, `matches_lost`, `cups_played`, `cups_won`, `score`, `rank_position`
 
 ## Comandos
 
@@ -241,6 +255,20 @@ npm run dev       # Servidor de desarrollo en localhost:3000
 npm run build     # Build de producción
 npm run start     # Servidor de producción
 ```
+
+## Responsive / Mobile
+
+El sitio está optimizado para mobile (375px+) y desktop. Convenciones:
+
+| Componente | Estrategia mobile |
+|------------|-------------------|
+| `Navbar` | En mobile (`<md`): oculta nav links (cubiertos por `MobileNav`) y search input. Muestra ícono de búsqueda que despliega input full-width bajo el header. Usa `max-md:hidden` para ocultar elementos desktop |
+| `MobileNav` | Bottom bar fijo, solo visible en mobile (`md:hidden`). Tres tabs: Inicio, Copas, Jugadores |
+| `MatchScore` | Padding, gap y ancho de scores reducidos en mobile: `px-3 py-2 sm:px-4 sm:py-3`, scores `w-5 text-xs sm:w-7 sm:text-sm` |
+| `CupCountdown` | Tipografía responsive: `text-xl sm:text-2xl` |
+| `cups/[id]` marcador | Score `text-3xl sm:text-5xl`, "vs" `text-xl sm:text-2xl` |
+| `CupAdminClient` | Header stackea en mobile (`flex-col sm:flex-row`). Grids de equipos y form de match: `grid-cols-1 sm:grid-cols-2` |
+| `dashboard` | Grilla copas `grid-cols-1 md:grid-cols-2`. Ranking muestra top 3 + "Ver todo el ranking" |
 
 ## Migraciones SQL
 

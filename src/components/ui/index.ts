@@ -7,3 +7,4 @@ export { default as StatCard } from "./StatCard";
 export { CategoryBadge, StatusBadge, ResultBadge } from "./Badge";
 export { default as MatchScore }    from "./MatchScore";
 export { default as CupCountdown } from "./CupCountdown";
+export { default as AvatarUploader } from "./AvatarUploader";

@@ -140,26 +140,26 @@ export default function DesignSystemPage() {
         <Section title="Match Score">
           <div className="space-y-2">
             <MatchScore
-              playersA={["J. García"]}
-              playersB={["M. López"]}
+              playersA={[{ name: "Juan García" }]}
+              playersB={[{ name: "Marcos López" }]}
               sets={[{ games_a: 6, games_b: 4 }, { games_a: 7, games_b: 5 }]}
               winner="A"
             />
             <MatchScore
-              playersA={["R. Fernández"]}
-              playersB={["P. Martínez"]}
+              playersA={[{ name: "Rodrigo Fernández" }]}
+              playersB={[{ name: "Pablo Martínez" }]}
               sets={[{ games_a: 3, games_b: 6 }, { games_a: 6, games_b: 4 }, { games_a: 4, games_b: 6 }]}
               winner="B"
             />
             <MatchScore
-              playersA={["C. Rodríguez", "D. Sánchez"]}
-              playersB={["L. Gómez", "A. Torres"]}
+              playersA={[{ name: "Carlos Rodríguez" }, { name: "Diego Sánchez" }]}
+              playersB={[{ name: "Lucas Gómez" }, { name: "Andrés Torres" }]}
               sets={[{ games_a: 6, games_b: 3 }, { games_a: 6, games_b: 2 }]}
               winner="A"
             />
             <MatchScore
-              playersA={["N. Herrera"]}
-              playersB={["F. Díaz"]}
+              playersA={[{ name: "Nicolás Herrera" }]}
+              playersB={[{ name: "Federico Díaz" }]}
             />
           </div>
         </Section>

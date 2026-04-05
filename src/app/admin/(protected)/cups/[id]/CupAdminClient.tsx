@@ -8,9 +8,10 @@ import {
 } from "@/lib/supabase/actions";
 import type { CupWithDetails, Player, MatchWithDetails, Team, PlayerCategory, MatchType } from "@/types";
 import { playerShortName } from "@/types";
+import MatchScore from "@/components/ui/MatchScore";
 
 // ---- Sets Editor ----
-function SetsEditor({ match, onSaved }: { match: MatchWithDetails; onSaved: () => void }) {
+function SetsEditor({ match, labelA, labelB, onSaved }: { match: MatchWithDetails; labelA: string; labelB: string; onSaved: () => void }) {
   const [sets, setSets] = useState<{ set_number: 1|2|3; games_team_a: number; games_team_b: number }[]>(
     match.sets.length > 0
       ? match.sets.map((s) => ({ set_number: s.set_number as 1|2|3, games_team_a: s.games_team_a, games_team_b: s.games_team_b }))
@@ -42,7 +43,7 @@ function SetsEditor({ match, onSaved }: { match: MatchWithDetails; onSaved: () =
   return (
     <div className="mt-2 space-y-2 bg-[#F6F7F9] rounded-md p-3">
       <div className="grid grid-cols-3 gap-2 text-xs font-semibold text-[#6B7280] text-center mb-1">
-        <span>Set</span><span>A</span><span>B</span>
+        <span>Set</span><span className="truncate">{labelA}</span><span className="truncate">{labelB}</span>
       </div>
       {sets.map((s, i) => (
         <div key={i} className="grid grid-cols-3 gap-2 items-center">
@@ -88,6 +89,7 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
   const [addPlayerTeam, setAddPlayerTeam] = useState<Team>("A");
   const [addPlayerId, setAddPlayerId]     = useState("");
 
+  const [mapsUrl, setMapsUrl] = useState(cup.maps_url ?? "");
   const [matchType,     setMatchType]     = useState<MatchType>("singles");
   const [matchCategory, setMatchCategory] = useState<PlayerCategory>("A");
   const [playerA1, setPlayerA1] = useState("");
@@ -131,7 +133,7 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <Link href="/admin/cups" className="text-xs text-[#6B7280] hover:text-[#CC4E0D]">← Copas</Link>
           <h1 className="text-2xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mt-1">{cup.name}</h1>
@@ -157,10 +159,39 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
         </div>
       </div>
 
+      {/* Google Maps */}
+      <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-5">
+        <h2 className="font-bold text-sm font-[var(--font-oswald)] uppercase text-[#1C1917] mb-3">Ubicación</h2>
+        <div className="flex gap-2">
+          <textarea
+            value={mapsUrl}
+            onChange={(e) => setMapsUrl(e.target.value)}
+            placeholder='Pegar iframe de Google Maps (ej: <iframe src="https://www.google.com/maps/embed?..." ...></iframe>)'
+            rows={2}
+            className="field-sm flex-1 resize-none text-xs"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              const url = mapsUrl.trim() || null;
+              updateCup(cup.id, { maps_url: url }).then(refresh);
+            }}
+            className="btn-primary px-4 py-1.5 text-sm"
+          >
+            Guardar
+          </button>
+        </div>
+        {cup.maps_url && (
+          <p className="text-xs text-[#6B7280] mt-2 truncate">
+            Actual: <a href={cup.maps_url} target="_blank" rel="noopener noreferrer" className="text-[#CC4E0D] hover:underline">{cup.maps_url}</a>
+          </p>
+        )}
+      </div>
+
       {/* Asignar jugadores */}
       <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-5">
         <h2 className="font-bold text-sm font-[var(--font-oswald)] uppercase text-[#1C1917] mb-4">Equipos</h2>
-        <div className="grid grid-cols-2 gap-6 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {(["A", "B"] as Team[]).map((team) => {
             const teamPlayers = team === "A" ? cup.players_a : cup.players_b;
             const teamName    = team === "A" ? cup.team_a_name : cup.team_b_name;
@@ -216,7 +247,7 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
               </select>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <p className="text-xs text-[#6B7280] mb-1">{cup.team_a_name}</p>
               <select value={playerA1} onChange={(e) => setPlayerA1(e.target.value)}
@@ -263,24 +294,34 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
             const pA = [m.team_a_player1, m.team_a_player2].filter(Boolean) as Player[];
             const pB = [m.team_b_player1, m.team_b_player2].filter(Boolean) as Player[];
             const label = m.type === "singles" ? `Singles Cat. ${m.category}` : "Dobles";
-            const currentSets = m.sets.map((s) => `${s.games_team_a}-${s.games_team_b}`).join(", ");
+            const sets = (m.sets ?? [])
+              .sort((a, b) => a.set_number - b.set_number)
+              .map((s) => ({ games_a: s.games_team_a, games_b: s.games_team_b }));
             return (
               <div key={m.id} className="border-b border-[#E5E7EB] py-3 last:border-0">
-                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setExpandedMatch(expandedMatch === m.id ? null : m.id)}>
-                  <span className="text-xs text-[#6B7280] w-24 shrink-0">{label}</span>
-                  <span className="text-sm font-medium text-[#1C1917] flex-1">
-                    {pA.map((p) => playerShortName(p)).join("/")} vs {pB.map((p) => playerShortName(p)).join("/")}
-                  </span>
-                  {currentSets && <span className="text-xs font-mono text-[#6B7280]">{currentSets}</span>}
-                  {m.winner_team && (
-                    <span className={`text-xs font-bold ${m.winner_team === "A" ? "text-[#036039]" : "text-[#B42318]"}`}>
-                      {m.winner_team === "A" ? pA[0] && playerShortName(pA[0]) : pB[0] && playerShortName(pB[0])} ✓
-                    </span>
-                  )}
-                  <span className="text-[#CC4E0D] text-xs">{expandedMatch === m.id ? "▲" : "▼"}</span>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="text-xs text-[#6B7280] font-semibold">{label}</span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedMatch(expandedMatch === m.id ? null : m.id)}
+                    className="ml-auto text-[#CC4E0D] text-xs font-semibold hover:underline"
+                  >
+                    {expandedMatch === m.id ? "Cerrar editor ▲" : "Editar sets ▼"}
+                  </button>
                 </div>
+                <MatchScore
+                  playersA={pA.map((p) => ({ name: playerShortName(p), avatarUrl: p.avatar_url }))}
+                  playersB={pB.map((p) => ({ name: playerShortName(p), avatarUrl: p.avatar_url }))}
+                  sets={sets}
+                  winner={m.winner_team}
+                />
                 {expandedMatch === m.id && (
-                  <SetsEditor match={m} onSaved={() => { setExpandedMatch(null); refresh(); }} />
+                  <SetsEditor
+                    match={m}
+                    labelA={pA.map((p) => playerShortName(p)).join(" / ")}
+                    labelB={pB.map((p) => playerShortName(p)).join(" / ")}
+                    onSaved={() => { setExpandedMatch(null); refresh(); }}
+                  />
                 )}
               </div>
             );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPlayerRanking } from "@/lib/supabase/queries";
 import { checkAdminSession } from "@/lib/auth";
 import { playerShortName } from "@/types";
+import { Avatar } from "@/components/ui";
 
 export default async function PlayersPage() {
   const [ranking, isAdmin] = await Promise.all([getPlayerRanking(), checkAdminSession()]);
@@ -33,20 +34,22 @@ export default async function PlayersPage() {
         ) : (
           <div className="space-y-2">
             {/* Header */}
-            <div className="hidden md:grid grid-cols-[40px_1fr_100px_100px_100px_120px_80px] gap-4 px-5 py-2 text-xs font-bold text-[#6B7280] uppercase tracking-wide">
+            <div className="hidden md:grid grid-cols-[40px_1fr_80px_80px_80px_80px_80px_80px] gap-4 px-5 py-2 text-xs font-bold text-[#6B7280] uppercase tracking-wide">
               <span>#</span>
               <span>Jugador</span>
               <span className="text-center">PJ</span>
+              <span className="text-center">PG</span>
               <span className="text-center">PP</span>
               <span className="text-center">TJ</span>
               <span className="text-center">TG</span>
               <span className="text-center">Puntaje</span>
             </div>
             {/* Leyenda columnas */}
-            <div className="hidden md:grid grid-cols-[40px_1fr_100px_100px_100px_120px_80px] gap-4 px-5 pb-1 text-[10px] text-[#9CA3AF]">
+            <div className="hidden md:grid grid-cols-[40px_1fr_80px_80px_80px_80px_80px_80px] gap-4 px-5 pb-1 text-[10px] text-[#9CA3AF]">
               <span />
               <span />
               <span className="text-center">Partidos jugados</span>
+              <span className="text-center">Partidos ganados</span>
               <span className="text-center">Partidos perdidos</span>
               <span className="text-center">Torneos jugados</span>
               <span className="text-center">Torneos ganados</span>
@@ -56,15 +59,13 @@ export default async function PlayersPage() {
               <Link
                 key={s.player.id}
                 href={`/players/${s.player.id}`}
-                className="bg-white border border-[#E5E7EB] rounded-[10px] px-5 py-3 grid grid-cols-[40px_1fr_auto] md:grid-cols-[40px_1fr_100px_100px_100px_120px_80px] gap-4 items-center hover:border-[#CC4E0D]/40 transition-colors"
+                className="bg-white border border-[#E5E7EB] rounded-[10px] px-5 py-3 grid grid-cols-[40px_1fr_auto] md:grid-cols-[40px_1fr_80px_80px_80px_80px_80px_80px] gap-4 items-center hover:border-[#CC4E0D]/40 transition-colors"
               >
                 <span className="text-base font-bold text-[#CC4E0D] font-[var(--font-oswald)]">
                   {String(s.rank_position).padStart(2, "0")}
                 </span>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0">
-                    <span className="text-xs font-semibold text-[#6B7280]">{s.player.first_name[0]}{s.player.last_name[0]}</span>
-                  </div>
+                  <Avatar firstName={s.player.first_name} lastName={s.player.last_name} avatarUrl={s.player.avatar_url} />
                   <div>
                     <p className="font-semibold text-sm text-[#1C1917]">{playerShortName(s.player)}</p>
                     {s.player.nickname && <p className="text-xs text-[#6B7280]">"{s.player.nickname}"</p>}
@@ -76,6 +77,7 @@ export default async function PlayersPage() {
                 </span>
                 {/* Desktop columns */}
                 <p className="hidden md:block text-center text-sm text-[#1C1917]">{s.matches_played}</p>
+                <p className="hidden md:block text-center text-sm text-[#036039] font-medium">{s.matches_won}</p>
                 <p className="hidden md:block text-center text-sm text-[#B42318] font-medium">{s.matches_lost}</p>
                 <p className="hidden md:block text-center text-sm text-[#1C1917]">{s.cups_played}</p>
                 <p className="hidden md:block text-center text-sm text-[#036039] font-medium">{s.cups_won}</p>

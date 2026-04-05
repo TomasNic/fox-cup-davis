@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getPlayers } from "@/lib/supabase/queries";
 import { playerShortName } from "@/types";
+import { Avatar } from "@/components/ui";
 import DeletePlayerButton from "./DeletePlayerButton";
 
 export default async function AdminPlayersPage() {
@@ -28,9 +29,7 @@ export default async function AdminPlayersPage() {
         <div className="space-y-2">
           {players.map((p) => (
             <div key={p.id} className="bg-white border border-[#E5E7EB] rounded-[10px] px-5 py-3 flex items-center gap-4">
-              <div className="w-9 h-9 rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0">
-                <span className="text-xs font-semibold text-[#6B7280]">{p.first_name[0]}{p.last_name[0]}</span>
-              </div>
+              <Avatar firstName={p.first_name} lastName={p.last_name} avatarUrl={p.avatar_url} />
               <div className="flex-1">
                 <p className="font-semibold text-sm text-[#1C1917]">{playerShortName(p)}</p>
                 {p.nickname && <p className="text-xs text-[#6B7280]">"{p.nickname}"</p>}
