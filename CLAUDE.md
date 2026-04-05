@@ -18,6 +18,8 @@ Web app para registrar y visualizar los resultados del torneo de tenis **Copa Da
 
 ## Design tokens
 
+### Colores
+
 | Token | Valor | Uso |
 |-------|-------|-----|
 | `#CC4E0D` | Naranja | Acento, botones primarios, activo |
@@ -31,6 +33,58 @@ Web app para registrar y visualizar los resultados del torneo de tenis **Copa Da
 | `#FFF7F2` | Surface+ | Fondo cálido para highlights |
 
 Bordes redondeados: `rounded-[10px]` (cards) y `rounded-[12px]` (formularios).
+
+### Escala de espaciado
+
+Definida en `globals.css` dentro de `@theme inline`. Usar siempre las clases utilitarias de Tailwind equivalentes.
+
+| Token CSS | Clase Tailwind | Valor |
+|-----------|---------------|-------|
+| `--space-1`  | `p-1 / m-1 / gap-1`   | 4px  |
+| `--space-2`  | `p-2 / m-2 / gap-2`   | 8px  |
+| `--space-3`  | `p-3 / m-3 / gap-3`   | 12px |
+| `--space-4`  | `p-4 / m-4 / gap-4`   | 16px |
+| `--space-5`  | `p-5 / m-5 / gap-5`   | 20px |
+| `--space-6`  | `p-6 / m-6 / gap-6`   | 24px |
+| `--space-8`  | `p-8 / m-8 / gap-8`   | 32px |
+| `--space-10` | `p-10 / m-10 / gap-10` | 40px |
+| `--space-12` | `p-12 / m-12 / gap-12` | 48px |
+
+### Padding de cards
+
+| Nivel | Clase | Valor | Cuándo usarlo |
+|-------|-------|-------|---------------|
+| SM (`--card-padding-sm`) | `p-4` | 16px | Filas de lista, ranking rows, cup history items |
+| MD (`--card-padding-md`) | `p-5` | 20px | Cards estándar, dashboard, cup cards |
+| LG (`--card-padding-lg`) | `p-6` | 24px | Cards destacadas: perfil de jugador, scoreboard, formularios |
+
+### Ritmo vertical
+
+| Caso | Clase | Valor |
+|------|-------|-------|
+| Título de sección → contenido | `mb-4` | 16px |
+| Header de sidebar → lista | `mb-3` | 12px |
+| Card principal → siguiente sección | `mb-8` | 32px |
+| Secciones agrupadas en página | `space-y-8` | 32px |
+| Grupos de sección (ej: Próximas / Anteriores en /cups) | `gap-10` | 40px |
+| Page title → primer bloque de contenido | `mb-6` | 24px |
+
+### Contenedor de página — `.page-main`
+
+Clase utilitaria definida en `globals.css > @layer components`. Usarla en el `<main>` de todas las páginas públicas.
+
+```css
+.page-main {
+  max-width: 1440px;  margin: 0 auto;
+  padding-top: 16px;
+  padding-inline: 16px;        /* mobile  */
+  padding-inline: 32px;        /* md+     */
+  padding-bottom: 96px;        /* mobile — clearance del MobileNav */
+  padding-bottom: 32px;        /* md+     */
+}
+```
+
+Usado en: `dashboard`, `cups`, `cups/[id]`, `players`, `players/[id]`, `reglamento`.
 
 ## Variables de entorno
 
@@ -105,7 +159,7 @@ Todos los componentes se exportan desde el barrel `src/components/ui/index.ts`.
 | `AvatarUploader` | Client Component para subir y recortar fotos de perfil. Flujo: seleccionar imagen → modal con crop circular (`react-easy-crop`) + zoom slider → recorta con Canvas API (máx 512px) → sube a `/api/admin/upload-avatar` → guarda URL en `<input type="hidden" name="avatar_url">`. Renderiza modal vía `createPortal` en `<body>` para evitar conflictos de stacking context con forms. Props: `currentUrl?`, `firstName?`, `lastName?` |
 
 ### Design system showcase
-`/design-system` muestra todos los componentes con ejemplos reales, incluyendo colores, tipografía, botones, inputs, badges, avatares, stat cards, match scores y avatar uploader.
+`/design-system` muestra todos los componentes con ejemplos reales, incluyendo colores, tipografía, botones, inputs, badges, avatares, stat cards, match scores y avatar uploader. También documenta el sistema de espaciado completo: escala de tokens, `.page-main`, padding de cards y ritmo vertical.
 
 ## Estructura del proyecto
 
@@ -149,8 +203,8 @@ src/
 │           └── upload-avatar/route.ts
 ├── components/
 │   ├── layout/
-│   │   ├── Navbar.tsx                  # Client Component — desktop: logo+nav+search input+admin; mobile: logo+search icon (expandible)+admin. Altura: h-16 mobile / h-[72px] desktop
-│   │   └── MobileNav.tsx               # Client Component — bottom bar fijo (md:hidden) con Inicio/Copas/Jugadores
+│   │   ├── Navbar.tsx                  # Client Component — desktop: logo + nav con íconos + botón "Iniciar sesión". Mobile: logo + botón admin. Sin búsqueda. Altura: h-16/h-[72px]
+│   │   └── MobileNav.tsx               # Client Component — pill flotante fijo bottom (md:hidden). Cuatro tabs con íconos: Inicio, Copas, Jugadores, Reglamento. Íconos rellenos en estado activo
 │   └── ui/
 │       ├── index.ts                    # Barrel export
 │       ├── Button.tsx
@@ -262,8 +316,8 @@ El sitio está optimizado para mobile (375px+) y desktop. Convenciones:
 
 | Componente | Estrategia mobile |
 |------------|-------------------|
-| `Navbar` | En mobile (`<md`): oculta nav links (cubiertos por `MobileNav`) y search input. Muestra ícono de búsqueda que despliega input full-width bajo el header. Usa `max-md:hidden` para ocultar elementos desktop |
-| `MobileNav` | Bottom bar fijo, solo visible en mobile (`md:hidden`). Tres tabs: Inicio, Copas, Jugadores |
+| `Navbar` | En mobile (`<md`): oculta nav links (cubiertos por `MobileNav`). Solo muestra logo y botón "Iniciar sesión". Sin input de búsqueda. Altura: `h-16` mobile / `h-[72px]` desktop. Padding horizontal: `px-4` mobile / `px-8` desktop |
+| `MobileNav` | Bottom bar flotante (pill redondeado), centrado horizontalmente, fijo en bottom. Solo visible en mobile (`md:hidden`). Cuatro tabs: Inicio, Copas, Jugadores, Reglamento |
 | `MatchScore` | Padding, gap y ancho de scores reducidos en mobile: `px-3 py-2 sm:px-4 sm:py-3`, scores `w-5 text-xs sm:w-7 sm:text-sm` |
 | `CupCountdown` | Tipografía responsive: `text-xl sm:text-2xl` |
 | `cups/[id]` marcador | Score `text-3xl sm:text-5xl`, "vs" `text-xl sm:text-2xl` |
