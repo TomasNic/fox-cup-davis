@@ -73,6 +73,15 @@ export async function updateCup(id: string, data: CupUpdate) {
   revalidatePath("/dashboard");
 }
 
+export async function deleteCup(id: string) {
+  const supabase = adminClient();
+  const { error } = await supabase.from("cups").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/cups");
+  revalidatePath("/dashboard");
+  redirect("/admin/cups");
+}
+
 // ----------------------------------------------------------------
 // CUP PLAYERS
 // ----------------------------------------------------------------

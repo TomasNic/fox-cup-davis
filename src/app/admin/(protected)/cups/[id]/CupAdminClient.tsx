@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   assignPlayerToCup, removePlayerFromCup,
-  createMatch, saveSets, updateCup,
+  createMatch, saveSets, updateCup, deleteCup,
 } from "@/lib/supabase/actions";
 import type { CupWithDetails, Player, MatchWithDetails, Team, PlayerCategory, MatchType } from "@/types";
 import { playerShortName } from "@/types";
@@ -90,6 +90,7 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
   const [addPlayerId, setAddPlayerId]     = useState("");
 
   const [mapsUrl, setMapsUrl] = useState(cup.maps_url ?? "");
+  const [date, setDate] = useState(cup.date);
   const [matchType,     setMatchType]     = useState<MatchType>("singles");
   const [matchCategory, setMatchCategory] = useState<PlayerCategory>("A");
   const [playerA1, setPlayerA1] = useState("");
@@ -137,13 +138,42 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
         <div>
           <Link href="/admin/cups" className="text-xs text-[#6B7280] hover:text-[#CC4E0D]">← Copas</Link>
           <h1 className="text-2xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mt-1">{cup.name}</h1>
+          <div className="flex items-center gap-2 mt-2">
+            <label className="text-xs text-[#6B7280]">Fecha</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="field-sm text-sm"
+            />
+            <button
+              type="button"
+              onClick={() => updateCup(cup.id, { date }).then(refresh)}
+              className="btn-primary px-3 py-1 text-xs"
+            >
+              Guardar
+            </button>
+          </div>
         </div>
-        <select value={cup.status} onChange={(e) => handleStatusChange(e.target.value)}
-          className="field-sm">
-          <option value="upcoming">Próximamente</option>
-          <option value="in_progress">En curso</option>
-          <option value="completed">Finalizada</option>
-        </select>
+        <div className="flex items-center gap-3">
+          <select value={cup.status} onChange={(e) => handleStatusChange(e.target.value)}
+            className="field-sm">
+            <option value="upcoming">Próximamente</option>
+            <option value="in_progress">En curso</option>
+            <option value="completed">Finalizada</option>
+          </select>
+          <button
+            type="button"
+            onClick={() => {
+              if (!confirm(`¿Eliminar "${cup.name}"? Esta acción no se puede deshacer.`)) return;
+              startTransition(() => deleteCup(cup.id));
+            }}
+            disabled={isPending}
+            className="btn-danger text-sm disabled:opacity-50"
+          >
+            Eliminar copa
+          </button>
+        </div>
       </div>
 
       {/* Score */}

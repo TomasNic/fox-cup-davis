@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCups } from "@/lib/supabase/queries";
+import DeleteCupButton from "./DeleteCupButton";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
@@ -33,6 +34,7 @@ export default async function AdminCupsPage() {
               <Link href={`/admin/cups/${c.id}`} className="text-xs text-[#CC4E0D] hover:underline font-medium">
                 Gestionar
               </Link>
+              <DeleteCupButton cupId={c.id} cupName={c.name} />
             </div>
           ))}
         </div>
