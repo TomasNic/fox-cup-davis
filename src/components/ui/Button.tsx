@@ -7,8 +7,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses = {
   primary: "bg-[#CC4E0D] text-white font-semibold hover:bg-[#b34409] active:bg-[#9a3a08] focus-visible:ring-[#CC4E0D]",
-  ghost:   "text-[#6B7280] hover:text-[#1C1917] focus-visible:ring-[#6B7280]/40",
-  danger:  "text-[#B42318] hover:text-[#8b1c13] focus-visible:ring-[#B42318]/40",
+  ghost:   "text-[#6B7280] hover:text-[#1C1917] focus-visible:ring-[#6B7280]/60",
+  danger:  "text-[#B42318] hover:text-[#8b1c13] focus-visible:ring-[#B42318]/60",
 };
 
 const sizeClasses = {

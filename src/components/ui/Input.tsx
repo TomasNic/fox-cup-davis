@@ -7,6 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export default function Input({ label, error, className = "", id, ...props }: InputProps) {
   const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+  const errorId = error ? `${inputId}-error` : undefined;
 
   return (
     <div className="flex flex-col gap-1">
@@ -17,6 +18,7 @@ export default function Input({ label, error, className = "", id, ...props }: In
       )}
       <input
         id={inputId}
+        aria-describedby={errorId}
         {...props}
         className={`
           w-full px-3 py-2.5 rounded-md border-2 border-[#D1D5DB] bg-white
@@ -28,7 +30,7 @@ export default function Input({ label, error, className = "", id, ...props }: In
           ${className}
         `}
       />
-      {error && <p className="text-xs text-[#B42318]">{error}</p>}
+      {error && <p id={errorId} className="text-xs text-[#B42318]">{error}</p>}
     </div>
   );
 }

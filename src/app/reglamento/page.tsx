@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 
 export default function ReglamentoPage() {
   return (
@@ -20,6 +21,7 @@ export default function ReglamentoPage() {
         </div>
       </main>
 
+      <Footer />
       <MobileNav />
     </div>
   );

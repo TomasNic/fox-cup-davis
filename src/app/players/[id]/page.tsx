@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPlayerHistory } from "@/lib/supabase/queries";
@@ -129,6 +130,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
           </div>
         </div>
       </main>
+      <Footer />
       <MobileNav />
     </div>
   );

@@ -36,8 +36,11 @@ export default function CupCountdown({ date }: CupCountdownProps) {
   useEffect(() => {
     // Primer cálculo en el cliente (evita mismatch de hidratación)
     setTimeLeft(calculate(target));
-    const id = setInterval(() => setTimeLeft(calculate(target)), 1000);
-    return () => clearInterval(id);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced) {
+      const id = setInterval(() => setTimeLeft(calculate(target)), 1000);
+      return () => clearInterval(id);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
@@ -60,7 +63,7 @@ export default function CupCountdown({ date }: CupCountdownProps) {
               <span className="text-xl sm:text-2xl font-bold font-[var(--font-oswald)] text-[#CC4E0D] tabular-nums leading-none">
                 {pad(value)}
               </span>
-              <span className="text-[9px] font-semibold text-[#9CA3AF] uppercase tracking-wide mt-0.5">
+              <span className="text-[11px] font-semibold text-[#6B7280] uppercase tracking-wide mt-0.5">
                 {label}
               </span>
             </div>

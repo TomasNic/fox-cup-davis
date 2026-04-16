@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState("");
@@ -32,9 +33,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#F6F7F9] flex items-center justify-center">
       <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-8 w-full max-w-sm shadow-sm">
         <div className="flex justify-center mb-6">
-          <div className="w-12 h-12 bg-[#CC4E0D] rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-bold font-[var(--font-oswald)]">CDF</span>
-          </div>
+          <Image src="/logo.png" alt="Copa Davis Fox" width={160} height={64} className="h-16 w-auto" />
         </div>
         <h1 className="text-xl font-bold font-[var(--font-oswald)] uppercase tracking-wide text-center text-[#1C1917] mb-6">
           Acceso Admin

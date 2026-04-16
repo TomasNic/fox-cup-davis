@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 
 const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -93,6 +94,7 @@ export default function CalendarioPage() {
         </div>
       </main>
 
+      <Footer />
       <MobileNav />
     </div>
   );

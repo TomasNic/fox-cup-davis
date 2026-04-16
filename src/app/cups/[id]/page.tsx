@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCupWithDetails } from "@/lib/supabase/queries";
@@ -179,6 +180,7 @@ export default async function CupDetailPage({ params }: { params: Promise<{ id: 
           </div>
         )}
       </main>
+      <Footer />
       <MobileNav />
     </div>
   );

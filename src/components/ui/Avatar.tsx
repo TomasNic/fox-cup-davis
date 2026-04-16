@@ -28,7 +28,7 @@ export default function Avatar({ firstName, lastName, size = "md", avatarUrl }: 
 
   return (
     <div className={`${container} rounded-full bg-[#E5E7EB] flex items-center justify-center shrink-0`}>
-      <span className={`${text} font-semibold text-[#6B7280]`}>{initials}</span>
+      <span className={`${text} font-semibold text-[#374151]`}>{initials}</span>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { getCups, getPlayerRanking } from "@/lib/supabase/queries";
 import { playerShortName } from "@/types";
@@ -153,6 +154,7 @@ export default async function DashboardPage() {
         </div>
 
       </main>
+      <Footer />
       <MobileNav />
     </div>
   );

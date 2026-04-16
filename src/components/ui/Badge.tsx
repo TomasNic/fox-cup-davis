@@ -2,11 +2,11 @@ import type { PlayerCategory, CupStatus } from "@/types";
 
 // --- Category Badge ---
 const categoryColors: Record<PlayerCategory, string> = {
-  A: "bg-[#CC4E0D]/10 text-[#CC4E0D]",
-  B: "bg-orange-100 text-orange-700",
-  C: "bg-yellow-100 text-yellow-700",
+  A: "bg-[#CC4E0D]/10 text-[#7a2e06]",
+  B: "bg-orange-100 text-orange-800",
+  C: "bg-yellow-100 text-yellow-800",
   D: "bg-blue-100 text-blue-700",
-  E: "bg-[#E5E7EB] text-[#6B7280]",
+  E: "bg-[#E5E7EB] text-[#374151]",
 };
 
 export function CategoryBadge({ category }: { category: PlayerCategory }) {
@@ -20,8 +20,8 @@ export function CategoryBadge({ category }: { category: PlayerCategory }) {
 // --- Status Badge ---
 const statusConfig: Record<CupStatus, { label: string; cls: string }> = {
   upcoming:    { label: "Próximamente", cls: "bg-blue-100 text-blue-700" },
-  in_progress: { label: "En curso",     cls: "bg-orange-100 text-orange-700" },
-  completed:   { label: "Finalizada",   cls: "bg-green-100 text-green-700" },
+  in_progress: { label: "En curso",     cls: "bg-orange-100 text-orange-800" },
+  completed:   { label: "Finalizada",   cls: "bg-green-100 text-green-800" },
 };
 
 export function StatusBadge({ status }: { status: CupStatus }) {
@@ -37,10 +37,10 @@ export function StatusBadge({ status }: { status: CupStatus }) {
 type Result = "won" | "lost" | "draw" | "pending";
 
 const resultConfig: Record<Result, { label: string; cls: string }> = {
-  won:     { label: "Ganó",      cls: "bg-green-100 text-green-700" },
-  lost:    { label: "Perdió",    cls: "bg-red-100 text-red-700" },
-  draw:    { label: "Empate",    cls: "bg-gray-100 text-gray-600" },
-  pending: { label: "Pendiente", cls: "bg-blue-100 text-blue-600" },
+  won:     { label: "Ganó",      cls: "bg-green-100 text-green-800" },
+  lost:    { label: "Perdió",    cls: "bg-red-100 text-red-800" },
+  draw:    { label: "Empate",    cls: "bg-gray-100 text-gray-700" },
+  pending: { label: "Pendiente", cls: "bg-blue-100 text-blue-700" },
 };
 
 export function ResultBadge({ result }: { result: Result }) {

@@ -70,7 +70,7 @@ function PlayerRow({ players, won, hasResult, setScores, oppScores }: RowProps) 
 
       {/* Checkmark */}
       <span className="w-4 sm:w-5 shrink-0 text-center">
-        {won && <span className="text-[#036039] text-sm font-bold">✓</span>}
+        {won && <span className="text-[#036039] text-sm font-bold" role="img" aria-label="Ganador">✓</span>}
       </span>
 
       {/* Scores por set */}
@@ -83,7 +83,7 @@ function PlayerRow({ players, won, hasResult, setScores, oppScores }: RowProps) 
             <span
               key={i}
               className={`w-5 sm:w-7 shrink-0 text-center text-xs sm:text-sm tabular-nums font-bold ${
-                wonSet ? "text-[#1C1917]" : "text-[#9CA3AF]"
+                wonSet ? "text-[#1C1917]" : "text-[#6B7280]"
               }`}
             >
               {score}

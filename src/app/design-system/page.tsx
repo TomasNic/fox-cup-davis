@@ -1,6 +1,8 @@
 import { Button, Input, Select, Textarea, Avatar, StatCard, CategoryBadge, StatusBadge, ResultBadge, MatchScore } from "@/components/ui";
+import CupCountdown from "@/components/ui/CupCountdown";
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -15,7 +17,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 mb-4">
-      <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">{label}</p>
+      <h3 className="text-xs font-semibold text-[#6B7280] uppercase tracking-wide">{label}</h3>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
     </div>
   );
@@ -37,16 +39,16 @@ export default function DesignSystemPage() {
         <Section title="Colores">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { name: "Acento",    bg: "bg-[#CC4E0D]",  text: "text-white",       hex: "#CC4E0D" },
-              { name: "Texto",     bg: "bg-[#1C1917]",  text: "text-white",       hex: "#1C1917" },
-              { name: "Muted",     bg: "bg-[#6B7280]",  text: "text-white",       hex: "#6B7280" },
-              { name: "Borde",     bg: "bg-[#E5E7EB]",  text: "text-[#1C1917]",   hex: "#E5E7EB" },
-              { name: "Fondo",     bg: "bg-[#F6F7F9]",  text: "text-[#1C1917]",   hex: "#F6F7F9" },
-              { name: "Éxito",     bg: "bg-[#036039]",  text: "text-white",       hex: "#036039" },
-              { name: "Danger",    bg: "bg-[#B42318]",  text: "text-white",       hex: "#B42318" },
-              { name: "Surface+",  bg: "bg-[#FFF7F2]",  text: "text-[#1C1917]",   hex: "#FFF7F2" },
+              { name: "Acento",    bg: "bg-[#CC4E0D]",  text: "text-white",       hex: "#CC4E0D",  border: false },
+              { name: "Texto",     bg: "bg-[#1C1917]",  text: "text-white",       hex: "#1C1917",  border: false },
+              { name: "Muted",     bg: "bg-[#6B7280]",  text: "text-white",       hex: "#6B7280",  border: false },
+              { name: "Borde",     bg: "bg-[#E5E7EB]",  text: "text-[#1C1917]",  hex: "#E5E7EB",  border: true  },
+              { name: "Fondo",     bg: "bg-[#F6F7F9]",  text: "text-[#1C1917]",  hex: "#F6F7F9",  border: true  },
+              { name: "Éxito",     bg: "bg-[#036039]",  text: "text-white",       hex: "#036039",  border: false },
+              { name: "Danger",    bg: "bg-[#B42318]",  text: "text-white",       hex: "#B42318",  border: false },
+              { name: "Surface+",  bg: "bg-[#FFF7F2]",  text: "text-[#1C1917]",  hex: "#FFF7F2",  border: true  },
             ].map((c) => (
-              <div key={c.hex} className={`${c.bg} rounded-[10px] p-4`}>
+              <div key={c.hex} className={`${c.bg} rounded-[10px] p-4 ${c.border ? "border border-[#E5E7EB]" : ""}`}>
                 <p className={`text-sm font-semibold ${c.text}`}>{c.name}</p>
                 <p className={`text-xs mt-0.5 ${c.text} opacity-70`}>{c.hex}</p>
               </div>
@@ -58,12 +60,47 @@ export default function DesignSystemPage() {
         <Section title="Tipografía">
           <p className="font-[var(--font-oswald)] text-4xl font-bold uppercase tracking-wide text-[#1C1917]">Oswald — Títulos</p>
           <p className="font-[var(--font-inter)] text-base text-[#6B7280] mt-2">Inter — Cuerpo de texto y UI</p>
-          <div className="mt-4 space-y-1">
-            <p className="text-2xl font-bold font-[var(--font-oswald)] uppercase text-[#1C1917]">Heading XL</p>
-            <p className="text-lg font-bold font-[var(--font-oswald)] uppercase text-[#1C1917]">Heading LG</p>
-            <p className="text-base font-bold font-[var(--font-oswald)] uppercase text-[#1C1917]">Heading MD</p>
-            <p className="text-sm text-[#1C1917]">Body regular — texto principal</p>
-            <p className="text-xs text-[#6B7280]">Caption — texto secundario y labels</p>
+          <div className="mt-6 bg-white border border-[#E5E7EB] rounded-[10px] divide-y divide-[#F3F4F6]">
+            {[
+              { el: "H1", sample: "Heading XL",                        font: "font-[var(--font-oswald)]", size: "text-2xl",  weight: "font-bold",   extra: "uppercase", px: "24px", lh: "1.2" },
+              { el: "H2", sample: "Heading LG",                        font: "font-[var(--font-oswald)]", size: "text-xl",   weight: "font-bold",   extra: "uppercase", px: "20px", lh: "1.2" },
+              { el: "H3", sample: "Heading MD",                        font: "font-[var(--font-oswald)]", size: "text-base", weight: "font-bold",   extra: "uppercase", px: "16px", lh: "1.2" },
+              { el: "p",  sample: "Body regular — texto principal",    font: "font-[var(--font-inter)]",  size: "text-sm",   weight: "font-normal", extra: "",          px: "14px", lh: "1.5" },
+              { el: "p",  sample: "Caption — labels y texto secundario", font: "font-[var(--font-inter)]", size: "text-xs",  weight: "font-normal", extra: "",          px: "12px", lh: "1.5" },
+            ].map(({ el, sample, font, size, weight, extra, px, lh }) => (
+              <div key={sample} className="flex items-center gap-4 px-4 py-3">
+                <div className="flex-1">
+                  <p className={`${font} ${size} ${weight} ${extra} text-[#1C1917]`}>{sample}</p>
+                </div>
+                <div className="text-right shrink-0 space-y-0.5">
+                  <code className="block text-[10px] font-mono text-[#CC4E0D]">{el}</code>
+                  <span className="block text-[10px] text-[#6B7280] tabular-nums">{px} / lh {lh}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* BORDER RADIUS */}
+        <Section title="Border Radius">
+          <div className="flex flex-wrap gap-3">
+            {[
+              { name: "SM", token: "--radius-sm", px: "6px",  cls: "rounded-[6px]",  usage: "Botones sm, badges" },
+              { name: "MD", token: "--radius-md", px: "10px", cls: "rounded-[10px]", usage: "Cards, stat cards" },
+              { name: "LG", token: "--radius-lg", px: "12px", cls: "rounded-[12px]", usage: "Formularios, modales" },
+            ].map(({ name, token, px, cls, usage }) => (
+              <div key={token} className="bg-white border border-[#E5E7EB] rounded-[10px] p-4 flex items-center gap-4">
+                <div className={`w-12 h-12 bg-[#CC4E0D]/10 border-2 border-[#CC4E0D]/30 ${cls} shrink-0`} />
+                <div>
+                  <p className="text-sm font-semibold text-[#1C1917]">Radius {name}</p>
+                  <p className="text-xs text-[#6B7280] mt-0.5">{usage}</p>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <code className="text-xs text-[#CC4E0D]">{token}</code>
+                    <span className="text-xs font-semibold text-[#6B7280] tabular-nums">{px}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </Section>
 
@@ -75,15 +112,17 @@ export default function DesignSystemPage() {
             <Button size="lg">Large</Button>
             <Button disabled>Disabled</Button>
           </Row>
-          <Row label="Ghost">
-            <Button variant="ghost" size="sm">Small</Button>
-            <Button variant="ghost" size="md">Medium</Button>
-            <Button variant="ghost" size="lg">Large</Button>
-          </Row>
-          <Row label="Danger">
-            <Button variant="danger" size="sm">Eliminar</Button>
-            <Button variant="danger" size="md">Eliminar</Button>
-          </Row>
+          <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-4">
+            <Row label="Ghost">
+              <Button variant="ghost" size="sm">Small</Button>
+              <Button variant="ghost" size="md">Medium</Button>
+              <Button variant="ghost" size="lg">Large</Button>
+            </Row>
+            <Row label="Danger">
+              <Button variant="danger" size="sm">Eliminar</Button>
+              <Button variant="danger" size="md">Eliminar</Button>
+            </Row>
+          </div>
         </Section>
 
         {/* INPUTS */}
@@ -129,11 +168,24 @@ export default function DesignSystemPage() {
 
         {/* AVATARS */}
         <Section title="Avatares">
-          <Row label="Tamaños">
+          <Row label="Sin foto — iniciales">
             <Avatar firstName="Juan" lastName="García" size="sm" />
             <Avatar firstName="Juan" lastName="García" size="md" />
             <Avatar firstName="Juan" lastName="García" size="lg" />
           </Row>
+          <Row label="Con foto — circular con object-cover">
+            <p className="text-xs text-[#6B7280]">
+              Mismas props + <code className="text-[#CC4E0D]">avatarUrl</code>. Renderiza <code className="text-[#CC4E0D]">&lt;img&gt;</code> con <code className="text-[#CC4E0D]">object-cover rounded-full</code>.
+            </p>
+          </Row>
+        </Section>
+
+        {/* CUP COUNTDOWN */}
+        <Section title="Cup Countdown">
+          <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-6 max-w-xs">
+            <p className="text-sm font-semibold text-[#1C1917]">Copa Diciembre 2026</p>
+            <CupCountdown date="2026-12-31" />
+          </div>
         </Section>
 
         {/* MATCH SCORE */}
@@ -211,7 +263,7 @@ export default function DesignSystemPage() {
               <div className="w-full max-w-xs">
                 {/* Outer box = viewport */}
                 <div className="relative border-2 border-dashed border-[#E5E7EB] rounded p-2">
-                  <span className="absolute -top-2.5 left-2 text-[10px] bg-[#F6F7F9] px-1 text-[#9CA3AF]">viewport</span>
+                  <span className="absolute -top-2.5 left-2 text-[10px] bg-[#F6F7F9] px-1 text-[#6B7280]">viewport</span>
                   {/* Top padding */}
                   <div className="bg-[#CC4E0D]/10 rounded h-4 flex items-center justify-center mb-0.5">
                     <span className="text-[9px] text-[#CC4E0D] font-semibold">top: 16px</span>
@@ -237,7 +289,7 @@ export default function DesignSystemPage() {
             </div>
             {/* Code */}
             <div className="px-5 py-4 font-mono text-xs space-y-0.5 border-t border-[#F3F4F6]">
-              <p className="text-[#9CA3AF]">{"/* globals.css — @layer components */"}</p>
+              <p className="text-[#6B7280]">{"/* globals.css — @layer components */"}</p>
               <p className="text-[#1C1917]">{".page-main {"}</p>
               <p className="text-[#CC4E0D] pl-4">{"max-width: 1440px;  margin: 0 auto;"}</p>
               <p className="text-[#CC4E0D] pl-4">{"padding-top: 16px;              /* --space-4 */"}</p>
@@ -279,7 +331,7 @@ export default function DesignSystemPage() {
                   <div className="text-right shrink-0">
                     <p className="text-sm font-mono font-bold text-[#CC4E0D]">{cls}</p>
                     <p className="text-[10px] text-[#6B7280] mt-0.5">{token}</p>
-                    <p className="text-[10px] text-[#9CA3AF]">{px}</p>
+                    <p className="text-[10px] text-[#6B7280]">{px}</p>
                   </div>
                 </div>
               </div>
@@ -301,11 +353,11 @@ export default function DesignSystemPage() {
               <div key={rule} className="flex items-center gap-4 px-4 py-3">
                 <div className="flex-1">
                   <p className="text-sm text-[#1C1917]">{rule}</p>
-                  <p className="text-xs text-[#9CA3AF] mt-0.5">{example}</p>
+                  <p className="text-xs text-[#6B7280] mt-0.5">{example}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-xs font-mono font-semibold text-[#CC4E0D]">{cls}</p>
-                  <p className="text-[10px] text-[#9CA3AF]">{px}</p>
+                  <p className="text-[10px] text-[#6B7280]">{px}</p>
                 </div>
               </div>
             ))}
@@ -314,6 +366,7 @@ export default function DesignSystemPage() {
         </Section>
 
       </main>
+      <Footer />
       <MobileNav />
     </div>
   );

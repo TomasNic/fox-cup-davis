@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { getPlayerRanking } from "@/lib/supabase/queries";
 import { checkAdminSession } from "@/lib/auth";
@@ -90,6 +91,7 @@ export default async function PlayersPage() {
           </div>
         )}
       </main>
+      <Footer />
       <MobileNav />
     </div>
   );

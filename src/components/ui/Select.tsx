@@ -11,6 +11,7 @@ export default function Select({
   label, error, options, placeholder, className = "", id, ...props
 }: SelectProps) {
   const selectId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+  const errorId = error ? `${selectId}-error` : undefined;
 
   return (
     <div className="flex flex-col gap-1">
@@ -21,6 +22,7 @@ export default function Select({
       )}
       <select
         id={selectId}
+        aria-describedby={errorId}
         {...props}
         className={`
           w-full px-3 py-2.5 rounded-md border-2 border-[#D1D5DB] bg-white
@@ -32,12 +34,12 @@ export default function Select({
           ${className}
         `}
       >
-        {placeholder && <option value="">{placeholder}</option>}
+        {placeholder && <option value="" disabled>{placeholder}</option>}
         {options.map((o) => (
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
-      {error && <p className="text-xs text-[#B42318]">{error}</p>}
+      {error && <p id={errorId} className="text-xs text-[#B42318]">{error}</p>}
     </div>
   );
 }
