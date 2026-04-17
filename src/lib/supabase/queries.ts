@@ -437,5 +437,5 @@ export async function getPlayerHistory(id: string): Promise<PlayerHistory | null
 export async function getSetting(key: string): Promise<string> {
   const supabase = await createClient();
   const { data } = await supabase.from("settings").select("value").eq("key", key).single();
-  return data?.value ?? "";
+  return (data as { value: string } | null)?.value ?? "";
 }
