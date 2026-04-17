@@ -40,6 +40,13 @@ export default async function AdminDashboardPage() {
           <h2 className="font-bold text-[#1C1917] font-[var(--font-oswald)] text-lg uppercase">Copas</h2>
           <p className="text-sm text-[#6B7280] mt-1">Crear copas, asignar jugadores, cargar partidos y resultados.</p>
         </Link>
+        <Link
+          href="/admin/reglamento"
+          className="bg-white border border-[#E5E7EB] rounded-[12px] p-6 hover:border-[#CC4E0D]/40 transition-colors"
+        >
+          <h2 className="font-bold text-[#1C1917] font-[var(--font-oswald)] text-lg uppercase">Reglamento</h2>
+          <p className="text-sm text-[#6B7280] mt-1">Editar el texto del reglamento visible en la app.</p>
+        </Link>
       </div>
     </div>
   );

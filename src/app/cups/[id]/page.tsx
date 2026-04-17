@@ -6,8 +6,9 @@ import { notFound } from "next/navigation";
 import { getCupWithDetails } from "@/lib/supabase/queries";
 import { checkAdminSession } from "@/lib/auth";
 import { playerShortName } from "@/types";
-import type { MatchWithDetails, Player } from "@/types";
-import { MatchScore, Avatar } from "@/components/ui";
+import type { Player } from "@/types";
+import { Avatar } from "@/components/ui";
+import CupMatchesFilter from "./CupMatchesFilter";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
@@ -31,33 +32,11 @@ function extractMapsSrc(raw: string): string | null {
   }
 }
 
-function MatchRow({ match }: { match: MatchWithDetails }) {
-  const playerA = [match.team_a_player1, match.team_a_player2].filter(Boolean) as Player[];
-  const playerB = [match.team_b_player1, match.team_b_player2].filter(Boolean) as Player[];
-  const sets = (match.sets ?? [])
-    .sort((a, b) => a.set_number - b.set_number)
-    .map((s) => ({ games_a: s.games_team_a, games_b: s.games_team_b }));
-
-  return (
-    <MatchScore
-      playersA={playerA.map((p) => ({ name: playerShortName(p), avatarUrl: p.avatar_url }))}
-      playersB={playerB.map((p) => ({ name: playerShortName(p), avatarUrl: p.avatar_url }))}
-      sets={sets}
-      winner={match.winner_team}
-    />
-  );
-}
 
 export default async function CupDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [cup, isAdmin] = await Promise.all([getCupWithDetails(id), checkAdminSession()]);
   if (!cup) notFound();
-
-  const singles = cup.matches.filter((m) => m.type === "singles")
-    .sort((a, b) => (a.category ?? "").localeCompare(b.category ?? ""));
-  const doubles = cup.matches.filter((m) => m.type === "doubles");
-
-  const categories = [...new globalThis.Set(singles.map((m) => m.category).filter(Boolean))] as string[];
 
   return (
     <div className="min-h-screen bg-[#F6F7F9]">
@@ -143,42 +122,11 @@ export default async function CupDetailPage({ params }: { params: Promise<{ id: 
           })()}
         </div>
 
-        {/* Partidos Singles */}
-        {singles.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
-              Singles
-            </h2>
-            {categories.map((cat) => (
-              <div key={cat} className="mb-4">
-                <p className="text-xs font-bold text-[#6B7280] uppercase mb-2">Categoría {cat}</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  {singles.filter((m) => m.category === cat).map((m) => (
-                    <MatchRow key={m.id} match={m} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Partidos Dobles */}
-        {doubles.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-base font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-4">
-              Dobles
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              {doubles.map((m) => <MatchRow key={m.id} match={m} />)}
-            </div>
-          </div>
-        )}
-
-        {cup.matches.length === 0 && (
-          <div className="bg-white border border-[#E5E7EB] rounded-[10px] py-12 text-center text-[#6B7280] text-sm">
-            Aún no hay partidos cargados.
-          </div>
-        )}
+        <CupMatchesFilter
+          matches={cup.matches}
+          playersA={cup.players_a}
+          playersB={cup.players_b}
+        />
       </main>
       <Footer />
       <MobileNav />

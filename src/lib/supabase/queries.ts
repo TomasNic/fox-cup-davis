@@ -232,9 +232,11 @@ export async function getPlayerRanking(): Promise<PlayerStats[]> {
     s.score = s.matches_played + s.matches_won + s.cups_played + s.cups_won;
   });
 
-  // Ordenar por score desc; empate → apellido asc
+  // Ordenar: score desc → partidos ganados desc → partidos jugados desc → apellido asc
   const sorted = Object.values(statsMap).sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
+    if (b.matches_won !== a.matches_won) return b.matches_won - a.matches_won;
+    if (b.matches_played !== a.matches_played) return b.matches_played - a.matches_played;
     return a.player.last_name.localeCompare(b.player.last_name);
   });
 
@@ -362,6 +364,7 @@ export async function getPlayerHistory(id: string): Promise<PlayerHistory | null
   const teammateCount: Record<string, number> = {};
   const rivalCount: Record<string, number> = {};
   const rivalWins: Record<string, number> = {};
+  const rivalLosses: Record<string, number> = {};
 
   allMatches.forEach((m) => {
     const playerTeam = m.team_a_player1_id === id || m.team_a_player2_id === id ? "A" : "B";
@@ -378,6 +381,7 @@ export async function getPlayerHistory(id: string): Promise<PlayerHistory | null
     rivals.filter((pid): pid is string => !!pid).forEach((pid) => {
       rivalCount[pid] = (rivalCount[pid] ?? 0) + 1;
       if (m.winner_team === playerTeam) rivalWins[pid] = (rivalWins[pid] ?? 0) + 1;
+      else if (m.winner_team) rivalLosses[pid] = (rivalLosses[pid] ?? 0) + 1;
     });
   });
 
@@ -407,5 +411,31 @@ export async function getPlayerHistory(id: string): Promise<PlayerHistory | null
     rank_position:  0,
   };
 
-  return { player, stats, cup_history, teammates, rivals };
+  // Victim: rival al que más le ganaste (mínimo 1 victoria)
+  const victimEntry = Object.entries(rivalWins)
+    .filter(([, wins]) => wins > 0)
+    .sort(([, a], [, b]) => b - a)[0];
+  const victim = victimEntry && playerMap[victimEntry[0]]
+    ? { player: playerMap[victimEntry[0]], wins: victimEntry[1] }
+    : null;
+
+  // Nemesis: rival que más veces te ganó (mínimo 1 derrota)
+  const nemesisEntry = Object.entries(rivalLosses)
+    .filter(([, losses]) => losses > 0)
+    .sort(([, a], [, b]) => b - a)[0];
+  const nemesis = nemesisEntry && playerMap[nemesisEntry[0]]
+    ? { player: playerMap[nemesisEntry[0]], losses: nemesisEntry[1] }
+    : null;
+
+  return { player, stats, cup_history, teammates, rivals, victim, nemesis };
+}
+
+// ----------------------------------------------------------------
+// SETTINGS
+// ----------------------------------------------------------------
+
+export async function getSetting(key: string): Promise<string> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("settings").select("value").eq("key", key).single();
+  return data?.value ?? "";
 }

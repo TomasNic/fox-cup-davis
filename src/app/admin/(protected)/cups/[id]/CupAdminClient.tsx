@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   assignPlayerToCup, removePlayerFromCup,
-  createMatch, saveSets, updateCup, deleteCup,
+  createMatch, deleteMatch, saveSets, updateCup, deleteCup,
 } from "@/lib/supabase/actions";
 import type { CupWithDetails, Player, MatchWithDetails, Team, PlayerCategory, MatchType } from "@/types";
 import { playerShortName } from "@/types";
@@ -15,7 +15,7 @@ function SetsEditor({ match, labelA, labelB, onSaved }: { match: MatchWithDetail
   const [sets, setSets] = useState<{ set_number: 1|2|3; games_team_a: number; games_team_b: number }[]>(
     match.sets.length > 0
       ? match.sets.map((s) => ({ set_number: s.set_number as 1|2|3, games_team_a: s.games_team_a, games_team_b: s.games_team_b }))
-      : [{ set_number: 1, games_team_a: 0, games_team_b: 0 }, { set_number: 2, games_team_a: 0, games_team_b: 0 }]
+      : [{ set_number: 1, games_team_a: 0, games_team_b: 0 }]
   );
   const [isPending, startTransition] = useTransition();
 
@@ -29,7 +29,7 @@ function SetsEditor({ match, labelA, labelB, onSaved }: { match: MatchWithDetail
   }
 
   function removeLastSet() {
-    if (sets.length <= 2) return;
+    if (sets.length <= 1) return;
     setSets((prev) => prev.slice(0, -1));
   }
 
@@ -60,7 +60,7 @@ function SetsEditor({ match, labelA, labelB, onSaved }: { match: MatchWithDetail
         {sets.length < 3 && (
           <button onClick={addSet} type="button" className="btn-ghost text-xs">+ Set {sets.length + 1}</button>
         )}
-        {sets.length > 2 && (
+        {sets.length > 1 && (
           <button onClick={removeLastSet} type="button" className="btn-danger text-xs">- Quitar set</button>
         )}
         <button onClick={handleSave} disabled={isPending} type="button"
@@ -337,6 +337,17 @@ export default function AdminCupDetailClient({ cup, allPlayers }: Props) {
                     className="ml-auto text-[#CC4E0D] text-xs font-semibold hover:underline"
                   >
                     {expandedMatch === m.id ? "Cerrar editor ▲" : "Editar sets ▼"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!confirm("¿Eliminar este partido? Esta acción no se puede deshacer.")) return;
+                      startTransition(() => deleteMatch(m.id, cup.id).then(refresh));
+                    }}
+                    disabled={isPending}
+                    className="btn-danger text-xs px-2 py-1 disabled:opacity-50"
+                  >
+                    Eliminar
                   </button>
                 </div>
                 <MatchScore

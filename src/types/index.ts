@@ -171,4 +171,6 @@ export interface PlayerHistory {
   cup_history: PlayerCupHistory[];
   teammates:   { player: Player; times: number }[];
   rivals:      { player: Player; times: number; wins: number }[];
+  victim:      { player: Player; wins: number } | null;
+  nemesis:     { player: Player; losses: number } | null;
 }

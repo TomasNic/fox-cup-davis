@@ -207,3 +207,17 @@ async function recalculateCupWinner(cupId: string) {
     .update({ winner_team: cupWinner })
     .eq("id", cupId);
 }
+
+// ----------------------------------------------------------------
+// SETTINGS
+// ----------------------------------------------------------------
+
+export async function saveSetting(key: string, value: string) {
+  const supabase = adminClient();
+  const { error } = await supabase
+    .from("settings")
+    .upsert({ key, value }, { onConflict: "key" });
+  if (error) throw new Error(error.message);
+  revalidatePath("/reglamento");
+  revalidatePath("/admin/reglamento");
+}
