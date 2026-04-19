@@ -67,7 +67,7 @@ export default async function DashboardPage() {
                 <path d="M12 14v4M8 22h8" />
                 <path d="M3 7h2M19 7h2" />
               </svg>
-              <div>
+              <div className="flex flex-col items-center text-center">
                 <p className="font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] text-lg">
                   Sin próxima copa confirmada
                 </p>
