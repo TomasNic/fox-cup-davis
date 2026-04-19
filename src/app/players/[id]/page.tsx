@@ -95,34 +95,32 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ i
 
           {/* Sidebar: victim, nemesis, compañeros y rivales */}
           <div className="w-full lg:w-[260px] shrink-0 space-y-5">
-            {(victim || nemesis) && (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-3 text-center">
-                  <p className="text-xs text-[#6B7280] mb-2">Tenés de hijo a:</p>
-                  {victim ? (
-                    <Link href={`/players/${victim.player.id}`} className="flex flex-col items-center gap-1 hover:text-[#CC4E0D]">
-                      <Avatar firstName={victim.player.first_name} lastName={victim.player.last_name} avatarUrl={victim.player.avatar_url} size="md" />
-                      <span className="text-xs font-semibold text-[#1C1917] leading-tight">{playerShortName(victim.player)}</span>
-                      <span className="text-xs text-[#036039] font-bold">{victim.wins} victoria{victim.wins !== 1 ? "s" : ""}</span>
-                    </Link>
-                  ) : (
-                    <p className="text-xs text-[#9CA3AF]">Sin datos</p>
-                  )}
-                </div>
-                <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-3 text-center">
-                  <p className="text-xs text-[#6B7280] mb-2">Sos el hijo de:</p>
-                  {nemesis ? (
-                    <Link href={`/players/${nemesis.player.id}`} className="flex flex-col items-center gap-1 hover:text-[#CC4E0D]">
-                      <Avatar firstName={nemesis.player.first_name} lastName={nemesis.player.last_name} avatarUrl={nemesis.player.avatar_url} size="md" />
-                      <span className="text-xs font-semibold text-[#1C1917] leading-tight">{playerShortName(nemesis.player)}</span>
-                      <span className="text-xs text-[#B42318] font-bold">{nemesis.losses} derrota{nemesis.losses !== 1 ? "s" : ""}</span>
-                    </Link>
-                  ) : (
-                    <p className="text-xs text-[#9CA3AF]">Sin datos</p>
-                  )}
-                </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-3 text-center">
+                <p className="text-xs text-[#6B7280] mb-2">Tenés de hijo a:</p>
+                {victim ? (
+                  <Link href={`/players/${victim.player.id}`} className="flex flex-col items-center gap-1 hover:text-[#CC4E0D]">
+                    <Avatar firstName={victim.player.first_name} lastName={victim.player.last_name} avatarUrl={victim.player.avatar_url} size="md" />
+                    <span className="text-xs font-semibold text-[#1C1917] leading-tight">{playerShortName(victim.player)}</span>
+                    <span className="text-xs text-[#036039] font-bold">+{victim.net} ({victim.wins}G {victim.losses}P)</span>
+                  </Link>
+                ) : (
+                  <p className="text-xs text-[#9CA3AF] mt-2">Nadie por ahora</p>
+                )}
               </div>
-            )}
+              <div className="bg-white border border-[#E5E7EB] rounded-[10px] p-3 text-center">
+                <p className="text-xs text-[#6B7280] mb-2">Sos el hijo de:</p>
+                {nemesis ? (
+                  <Link href={`/players/${nemesis.player.id}`} className="flex flex-col items-center gap-1 hover:text-[#CC4E0D]">
+                    <Avatar firstName={nemesis.player.first_name} lastName={nemesis.player.last_name} avatarUrl={nemesis.player.avatar_url} size="md" />
+                    <span className="text-xs font-semibold text-[#1C1917] leading-tight">{playerShortName(nemesis.player)}</span>
+                    <span className="text-xs text-[#B42318] font-bold">-{nemesis.net} ({nemesis.wins}G {nemesis.losses}P)</span>
+                  </Link>
+                ) : (
+                  <p className="text-xs text-[#9CA3AF] mt-2">Nadie por ahora</p>
+                )}
+              </div>
+            </div>
             {teammates.length > 0 && (
               <div>
                 <h2 className="text-sm font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] mb-3">

@@ -411,20 +411,31 @@ export async function getPlayerHistory(id: string): Promise<PlayerHistory | null
     rank_position:  0,
   };
 
-  // Victim: rival al que más le ganaste (mínimo 1 victoria)
-  const victimEntry = Object.entries(rivalWins)
-    .filter(([, wins]) => wins > 0)
-    .sort(([, a], [, b]) => b - a)[0];
-  const victim = victimEntry && playerMap[victimEntry[0]]
-    ? { player: playerMap[victimEntry[0]], wins: victimEntry[1] }
+  // Neteamos victorias y derrotas por rival para evitar que el mismo jugador
+  // aparezca como victim y nemesis al mismo tiempo.
+  // net > 0 → vos ganás la cabeza a cabeza → es tu "hijo"
+  // net < 0 → él te gana la cabeza a cabeza → sos su "hijo"
+  const allRivalIds = new globalThis.Set([...Object.keys(rivalWins), ...Object.keys(rivalLosses)]);
+
+  let victimId: string | null = null;
+  let victimNet = 0;
+  let nemesisId: string | null = null;
+  let nemesisNet = 0;
+
+  allRivalIds.forEach((pid) => {
+    const wins   = rivalWins[pid]   ?? 0;
+    const losses = rivalLosses[pid] ?? 0;
+    const net    = wins - losses;
+    if (net > victimNet)  { victimNet  = net;  victimId  = pid; }
+    if (net < nemesisNet) { nemesisNet = net;  nemesisId = pid; }
+  });
+
+  const victim = victimId && playerMap[victimId]
+    ? { player: playerMap[victimId], wins: rivalWins[victimId] ?? 0, losses: rivalLosses[victimId] ?? 0, net: victimNet }
     : null;
 
-  // Nemesis: rival que más veces te ganó (mínimo 1 derrota)
-  const nemesisEntry = Object.entries(rivalLosses)
-    .filter(([, losses]) => losses > 0)
-    .sort(([, a], [, b]) => b - a)[0];
-  const nemesis = nemesisEntry && playerMap[nemesisEntry[0]]
-    ? { player: playerMap[nemesisEntry[0]], losses: nemesisEntry[1] }
+  const nemesis = nemesisId && playerMap[nemesisId]
+    ? { player: playerMap[nemesisId], wins: rivalWins[nemesisId] ?? 0, losses: rivalLosses[nemesisId] ?? 0, net: Math.abs(nemesisNet) }
     : null;
 
   return { player, stats, cup_history, teammates, rivals, victim, nemesis };
