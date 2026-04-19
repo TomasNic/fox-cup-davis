@@ -411,31 +411,36 @@ export async function getPlayerHistory(id: string): Promise<PlayerHistory | null
     rank_position:  0,
   };
 
-  // Neteamos victorias y derrotas por rival para evitar que el mismo jugador
-  // aparezca como victim y nemesis al mismo tiempo.
-  // net > 0 → vos ganás la cabeza a cabeza → es tu "hijo"
-  // net < 0 → él te gana la cabeza a cabeza → sos su "hijo"
+  // Construimos la tabla de head-to-head neto por rival.
+  // Solo se considera "hijo" si net > 0, y "nemesis" si net < 0.
+  // El mismo jugador nunca puede aparecer en los dos.
+  // Criterio de selección: mayor diferencia neta. Desempate: más victorias brutas (victim) / más derrotas brutas (nemesis).
   const allRivalIds = new globalThis.Set([...Object.keys(rivalWins), ...Object.keys(rivalLosses)]);
 
-  let victimId: string | null = null;
-  let victimNet = 0;
-  let nemesisId: string | null = null;
-  let nemesisNet = 0;
+  const rivalEntries = Array.from(allRivalIds)
+    .filter((pid) => playerMap[pid])
+    .map((pid) => {
+      const wins   = rivalWins[pid]   ?? 0;
+      const losses = rivalLosses[pid] ?? 0;
+      return { pid, wins, losses, net: wins - losses };
+    });
 
-  allRivalIds.forEach((pid) => {
-    const wins   = rivalWins[pid]   ?? 0;
-    const losses = rivalLosses[pid] ?? 0;
-    const net    = wins - losses;
-    if (net > victimNet)  { victimNet  = net;  victimId  = pid; }
-    if (net < nemesisNet) { nemesisNet = net;  nemesisId = pid; }
-  });
+  // Victim: net > 0, ordenado por net desc, luego victorias brutas desc
+  const victimData = rivalEntries
+    .filter((r) => r.net > 0)
+    .sort((a, b) => b.net - a.net || b.wins - a.wins)[0] ?? null;
 
-  const victim = victimId && playerMap[victimId]
-    ? { player: playerMap[victimId], wins: rivalWins[victimId] ?? 0, losses: rivalLosses[victimId] ?? 0, net: victimNet }
+  // Nemesis: net < 0, ordenado por diferencia negativa desc (más dominante primero), luego derrotas brutas desc
+  const nemesisData = rivalEntries
+    .filter((r) => r.net < 0)
+    .sort((a, b) => a.net - b.net || b.losses - a.losses)[0] ?? null;
+
+  const victim = victimData
+    ? { player: playerMap[victimData.pid], wins: victimData.wins, losses: victimData.losses, net: victimData.net }
     : null;
 
-  const nemesis = nemesisId && playerMap[nemesisId]
-    ? { player: playerMap[nemesisId], wins: rivalWins[nemesisId] ?? 0, losses: rivalLosses[nemesisId] ?? 0, net: Math.abs(nemesisNet) }
+  const nemesis = nemesisData
+    ? { player: playerMap[nemesisData.pid], wins: nemesisData.wins, losses: nemesisData.losses, net: Math.abs(nemesisData.net) }
     : null;
 
   return { player, stats, cup_history, teammates, rivals, victim, nemesis };
