@@ -61,8 +61,23 @@ export default async function DashboardPage() {
               </Link>
             </div>
           ) : (
-            <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-5 flex items-center justify-center text-sm text-[#9CA3AF]">
-              Sin próxima copa programada
+            <div className="bg-white border border-[#E5E7EB] rounded-[12px] p-8 flex flex-col items-center justify-center text-center gap-3">
+              <svg className="w-12 h-12 text-[#E5E7EB]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2h12l1 6c0 3.31-2.69 6-6 6H11C7.69 14 5 11.31 5 8L6 2z" />
+                <path d="M12 14v4M8 22h8" />
+                <path d="M3 7h2M19 7h2" />
+              </svg>
+              <div>
+                <p className="font-bold font-[var(--font-oswald)] uppercase tracking-wide text-[#1C1917] text-lg">
+                  Sin próxima copa confirmada
+                </p>
+                <p className="text-sm text-[#6B7280] mt-1 max-w-[240px]">
+                  El polvo de ladrillo nos espera. Mientras tanto, seguí el ranking y fijate que tenés que mejorar.
+                </p>
+              </div>
+              <Link href="/cups" className="text-sm text-[#CC4E0D] font-medium hover:underline mt-1">
+                Ver historial de copas →
+              </Link>
             </div>
           )}
 

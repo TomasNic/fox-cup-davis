@@ -6,8 +6,18 @@ import { getCups } from "@/lib/supabase/queries";
 import { checkAdminSession } from "@/lib/auth";
 import type { Cup } from "@/types";
 
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
+function DateBadge({ dateStr }: { dateStr: string }) {
+  const d = new Date(dateStr);
+  const day = d.toLocaleDateString("es-AR", { day: "numeric" });
+  const month = d.toLocaleDateString("es-AR", { month: "short" }).replace(".", "");
+  const year = d.getFullYear();
+  return (
+    <div className="flex flex-col items-center justify-center bg-[#FFF7F2] border border-[#CC4E0D]/20 rounded-[8px] px-3 py-2 shrink-0 min-w-[52px]">
+      <span className="text-2xl font-bold font-[var(--font-oswald)] text-[#CC4E0D] leading-none">{day}</span>
+      <span className="text-[10px] font-semibold text-[#CC4E0D] uppercase tracking-wide leading-tight">{month}</span>
+      <span className="text-[10px] text-[#9CA3AF] leading-tight">{year}</span>
+    </div>
+  );
 }
 
 function CupCard({ cup }: { cup: Cup }) {
@@ -23,13 +33,15 @@ function CupCard({ cup }: { cup: Cup }) {
       href={`/cups/${cup.id}`}
       className="bg-white border border-[#E5E7EB] rounded-[12px] p-5 flex flex-col gap-3 hover:border-[#CC4E0D]/40 hover:shadow-sm transition-all"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="font-bold text-[#1C1917] font-[var(--font-oswald)] text-lg leading-tight">{cup.name}</p>
-          <p className="text-xs text-[#6B7280] mt-0.5">{formatDate(cup.date)}</p>
-          {cup.location && <p className="text-xs text-[#6B7280]">{cup.location}</p>}
+      <div className="flex items-start gap-3">
+        <DateBadge dateStr={cup.date} />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <p className="font-bold text-[#1C1917] font-[var(--font-oswald)] text-lg leading-tight">{cup.name}</p>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${cls}`}>{label}</span>
+          </div>
+          {cup.location && <p className="text-xs text-[#6B7280] mt-0.5">{cup.location}</p>}
         </div>
-        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${cls}`}>{label}</span>
       </div>
 
       <div className="flex items-center gap-2 text-sm">
